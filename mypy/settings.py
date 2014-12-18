@@ -11,10 +11,14 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
+SETTINGS_DIR = os.path.dirname(__file__)
+PROJECT_PATH = os.path.join(SETTINGS_DIR, os.pardir)
+PROJECT_PATH = os.path.abspath(PROJECT_PATH)
+TEMPLATE_PATH = os.path.join(PROJECT_PATH, 'templates')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'y+bgib&g4k$s&)pgcamzye+b=@k*7ona_6ii@kord3f(0ijtab'
@@ -36,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mypy_app',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -48,6 +53,10 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'mypy.urls'
+
+TEMPLATE_DIRS = (
+        TEMPLATE_PATH,
+        )
 
 WSGI_APPLICATION = 'mypy.wsgi.application'
 
