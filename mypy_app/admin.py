@@ -1,3 +1,4 @@
 from django.contrib import admin
+from mypy_app.models import add_server
 
-# Register your models here.
+admin.site.register(add_server)

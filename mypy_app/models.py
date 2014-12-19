@@ -1,3 +1,14 @@
 from django.db import models
 
-# Create your models here.
+class add_server(models.Model):
+    mysql_server_name = models.CharField(max_length=200, unique=True, null=False)
+    mysql_host = models.CharField(max_length=200, null=False)
+    mysql_port = models.CharField(max_length=10, null=False, default="3306")
+    mysql_user = models.CharField(max_length=200, null=False)
+    mysql_password = models.CharField(max_length=200, null=False)
+
+    def __unicode__(self):
+        tup = (
+                self.mysql_server_name, self.mysql_host, self.mysql_port, \
+                        self.mysql_user, self.mysql_password)
+        return str(tup)
