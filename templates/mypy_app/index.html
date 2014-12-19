@@ -4,11 +4,11 @@
 <head>
 <title>MyPy</title>
 </head>
-
+{% load static %}
 <body>
 <h1>MyPy response</h1>
 hello world! <strong>{{ boldmessage }}</strong><br />
-<a href="/mypy/about/">About</a><br />
+<img src="{%static 'code.png'%}">
 </body>
 
 </html>

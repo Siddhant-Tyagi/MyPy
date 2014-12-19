@@ -15,7 +15,7 @@ SETTINGS_DIR = os.path.dirname(__file__)
 PROJECT_PATH = os.path.join(SETTINGS_DIR, os.pardir)
 PROJECT_PATH = os.path.abspath(PROJECT_PATH)
 TEMPLATE_PATH = os.path.join(PROJECT_PATH, 'templates')
-
+STATIC_PATH = os.path.join(PROJECT_PATH, 'static')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -54,9 +54,14 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'mypy.urls'
 
+STATIC_URL = '/static/'
+
 TEMPLATE_DIRS = (
         TEMPLATE_PATH,
         )
+STATICFILES_DIRS = (
+            STATIC_PATH,
+            )
 
 WSGI_APPLICATION = 'mypy.wsgi.application'
 
@@ -88,4 +93,3 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = '/static/'
