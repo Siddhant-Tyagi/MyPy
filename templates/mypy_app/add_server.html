@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+     <title>Add Server</title>
+  </head>
+
+  <body>
+
+      <form id="adding_server" method="post" action="/mypy/add_server/">
+	      {% csrf_token %}
+	      {% for field in form.visible_fields %}
+	      {{ field.label }} {{ field }}</br>
+	      {% endfor %}
+	      
+	      <input type="submit" name="submit" value="Add Server" />
+      </form>
+  </body>
+</html>
