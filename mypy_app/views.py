@@ -12,14 +12,11 @@ def adding_server(request):
 
         if form.is_valid():
             form.save(commit=True)
-
             return index(request)
         else:
             print form.errors
     else:
         form = Add_Server_Form()
-
-
 
     return render_to_response('mypy_app/add_server.html', {'form': form}, context)
 
