@@ -8,7 +8,5 @@ class add_server(models.Model):
     mysql_password = models.CharField(max_length=200, null=False)
 
     def __unicode__(self):
-        tup = (
-                self.mysql_server_name, self.mysql_host, self.mysql_port, \
-                        self.mysql_user, self.mysql_password)
-        return str(tup)
+        return '%s %s %s %s %s' %(self.mysql_server_name, self.mysql_host, self.mysql_port, \
+                self.mysql_user, self.mysql_password)

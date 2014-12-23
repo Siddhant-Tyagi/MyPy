@@ -7,8 +7,20 @@
 {% load static %}
 <body>
 <h1>MyPy response</h1>
-hello world! <strong>{{ boldmessage }}</strong><br />
-<img src="{%static 'code.png'%}">
+{% if add_server_info %}
+	 {% for server in add_server_info %}
+	 <ul>
+	 <li>Server Name: {{ server.mysql_server_name }}</li>
+	 <li>MySQL Host: {{ server.mysql_host }}</li>
+	 <li>MySQL Port: {{ server.mysql_port }}</li>
+	 <li>MySQL Username: {{ server.mysql_user }}</li>
+	 <li>MySQL Password: {{ server.mysql_password }}</li>
+         </ul>
+	 {% endfor %}
+{% else %}
+  <strong>No servers present</strong>
+{% endif %}
+
 </body>
 
 </html>
