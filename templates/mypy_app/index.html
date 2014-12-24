@@ -7,11 +7,13 @@
 {% load static %}
 <body>
 <h1>MyPy response</h1>
-{% if add_server_info %}
    {{ add_server_info }}
-{% else %}
-  <strong>No servers present</strong>
+{% if server_list %}
+    {% for server in server_list %}
+       {{ server.mysql_server_name }}
+    {% endfor %}
 {% endif %}
+
 
 </body>
 

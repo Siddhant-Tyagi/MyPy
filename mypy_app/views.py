@@ -28,14 +28,15 @@ def index(request):
     current_object = add_server.objects.all()[len(add_server.objects.all())-1]
     context_dict = {
             'add_server_info': connect_to_server(current_object),
+            'server_list': add_server.objects.all(),
             }
+
     if "successful" not in context_dict['add_server_info']:
         current_object.delete()
 
     """context_dict = {
             'add_server_info': add_server.objects.all(),
             }"""
+
     return render_to_response('mypy_app/index.html', context_dict, context)
 
-def about(request):
-    return HttpResponse("<html> <body> <a href='/mypy/'>Home Page</a></body></html>")
