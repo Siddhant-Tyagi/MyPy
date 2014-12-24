@@ -8,7 +8,7 @@ class Add_Server_Form(forms.ModelForm):
             max_length=128, label="MySQL Host IP ")
     mysql_port = forms.CharField(widget=forms.TextInput(attrs={'class' : 'input'}), \
             max_length=128, label="MySQL Port ")
-    mysql_username = forms.CharField(widget=forms.TextInput(attrs={'class' : 'input'}), \
+    mysql_user = forms.CharField(widget=forms.TextInput(attrs={'class' : 'input'}), \
             max_length=128, label="MySQL Username ")
     mysql_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input'}), \
             label="MySQL Password ")
@@ -18,4 +18,4 @@ class Add_Server_Form(forms.ModelForm):
         """widget = {
                 'mysql_password': forms.PasswordInput(),
                     }"""
-        fields = ('mysql_server_name', 'mysql_host', 'mysql_port', 'mysql_username', 'mysql_password')
+        fields = ('mysql_server_name', 'mysql_host', 'mysql_port', 'mysql_user', 'mysql_password')
