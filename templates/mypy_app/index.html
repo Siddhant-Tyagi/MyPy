@@ -3,18 +3,37 @@
 
 <head>
 <title>MyPy</title>
+
+<style>
+.btn {
+	display: inline-block;
+	background: linear-gradient(#49708f, #293f50);
+	border: 0;
+	color: #fff;
+	float: left;
+	cursor: pointer;
+	font-weight: bold;
+	padding: 8px 16px;
+	left-margin: 10px;
+     }
+
+</style>
 </head>
 {% load static %}
 <body>
 <h1>MyPy response</h1>
-   {{ add_server_info }}
+{{ add_server_info }}
 {% if server_list %}
-    {% for server in server_list %}
-       {{ server.mysql_server_name }}
-    {% endfor %}
+<ul>
+	{% for server in server_list %}
+	<li>{{ server.mysql_server_name }}</li>
+	{% endfor %}
+</ul>
 {% endif %}
-
-
+<form action="/mypy/add_server/" method="post">
+	{% csrf_token %}
+	<input type="submit" value="Add Server" class="btn">
+</form>
 </body>
 
 </html>

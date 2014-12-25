@@ -11,7 +11,7 @@ class Add_Server_Form(forms.ModelForm):
     mysql_user = forms.CharField(widget=forms.TextInput(attrs={'class' : 'input'}), \
             max_length=128, label="MySQL Username ")
     mysql_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input'}), \
-            label="MySQL Password ")
+            label="MySQL Password ", required=False)
 
     class Meta:
         model = add_server

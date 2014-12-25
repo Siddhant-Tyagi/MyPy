@@ -13,7 +13,11 @@ def adding_server(request):
 
         if form.is_valid():
             form.save(commit=True)
-            return index(request)
+            current_object = add_server.objects.all()[len(add_server.objects.all())-1]
+            adding_server_msg = connect_to_server(current_object)
+            if "successful" not in adding_server_msg:
+                current_object.delete()
+            return index(request, adding_server_msg)
         else:
             print form.errors
     else:
@@ -23,16 +27,16 @@ def adding_server(request):
 
 
 
-def index(request):
+def index(request, adding_server_msg=""):
     context = RequestContext(request)
-    current_object = add_server.objects.all()[len(add_server.objects.all())-1]
+    #current_object = add_server.objects.all()[len(add_server.objects.all())-1]
     context_dict = {
-            'add_server_info': connect_to_server(current_object),
+            'add_server_info': adding_server_msg,
             'server_list': add_server.objects.all(),
             }
 
-    if "successful" not in context_dict['add_server_info']:
-        current_object.delete()
+    #if "successful" not in context_dict['add_server_info']:
+        #current_object.delete()
 
     """context_dict = {
             'add_server_info': add_server.objects.all(),
