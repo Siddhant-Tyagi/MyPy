@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Add Server</title>
+<style>
+form {
+	border: 1px solid #c6c7cc;
+	border-radius: 5px;
+	font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	overflow: hidden;
+	width: 450px;
+}
+
+.label {
+	color: #395870;
+	display: block;
+	font-weight: bold;
+	margin-bottom: 7px;
+	margin-left: 10px;
+}
+.input {
+	background: #fff;
+	margin: 10px;
+	border: 1px solid #c6c7cc;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .1);
+	color: #636466;
+	padding: 6px;
+	margin-top: 1px;
+	margin-bottom: 15px;
+	width: 90%;
+}
+
+.btn {
+	display: inline-block;
+	background: linear-gradient(#49708f, #293f50);
+	border: 0;
+	color: #fff;
+	float: right;
+	cursor: pointer;
+	font-weight: bold;
+	padding: 8px 16px;
+}
+</style>
+</head>
+
+<body>
+
+<form id="adding_server" method="post" action="/mypy/add_server/">
+	<br>
+	{% csrf_token %}
+	{% for field in form.visible_fields %}
+	<span class="label">{{ field.label }}</span> {{ field }} </br></br>
+	{% endfor %}
+
+	<input type="submit" name="submit" value="Add Server" class="btn" />
+</form>
+</body>
+</html>
