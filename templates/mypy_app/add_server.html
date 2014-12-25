@@ -41,10 +41,29 @@ form {
 	padding: 8px 16px;
 }
 </style>
+<script type="text/javascript">
+function htmlDecode(input){
+	var e = document.createElement('div');
+	e.innerHTML = input;
+	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}
+</script>
+
 </head>
 
 <body>
+<p id="demo"></p>
+{% if add_server_info %}
+<script>
+function add_server_alert()
+{
 
+	alert(htmlDecode("{{ add_server_info }}"));
+	window.location = "/mypy/";
+}
+window.onload = add_server_alert;
+</script>
+{% endif %}
 <form id="adding_server" method="post" action="/mypy/add_server/">
 	<br>
 	{% csrf_token %}

@@ -7,28 +7,34 @@ from mypy_mysqldb import *
 
 def adding_server(request):
     context = RequestContext(request)
-
     if request.method == 'POST':
         form = Add_Server_Form(request.POST)
-
+ 
         if form.is_valid():
             form.save(commit=True)
             current_object = add_server.objects.all()[len(add_server.objects.all())-1]
             adding_server_msg = connect_to_server(current_object)
             if "successful" not in adding_server_msg:
                 current_object.delete()
-            return index(request, adding_server_msg)
+            print adding_server_msg
+            #return index(request, adding_server_msg)
+            return render_to_response('mypy_app/add_server.html', {'form': form, \
+                    'add_server_info': adding_server_msg}, context)
         else:
             print form.errors
+            adding_server_msg = ""
     else:
         form = Add_Server_Form()
-
-    return render_to_response('mypy_app/add_server.html', {'form': form}, context)
+        adding_server_msg = ""
+    print "how come i am here" 
+    return render_to_response('mypy_app/add_server.html', {'form': form, 'add_server_info': adding_server_msg}, \
+            context)
 
 
 
 def index(request, adding_server_msg=""):
     context = RequestContext(request)
+    #print "inside index: " + adding_server_msg
     #current_object = add_server.objects.all()[len(add_server.objects.all())-1]
     context_dict = {
             'add_server_info': adding_server_msg,
