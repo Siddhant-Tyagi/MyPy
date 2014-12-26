@@ -27,17 +27,19 @@ def adding_server(request):
         form = Add_Server_Form()
         adding_server_msg = ""
     print "how come i am here" 
-    return render_to_response('mypy_app/add_server.html', {'form': form, 'add_server_info': adding_server_msg}, \
-            context)
+    return render_to_response('mypy_app/add_server.html', {'form': form, \
+            'add_server_info': adding_server_msg}, context)
 
 
 
-def index(request, adding_server_msg=""):
+def index(request):
     context = RequestContext(request)
     #print "inside index: " + adding_server_msg
     #current_object = add_server.objects.all()[len(add_server.objects.all())-1]
+    if request.method == 'POST':
+        delete_server_list = request.POST.getlist('delete_server_checkbox')
+        print delete_server_list
     context_dict = {
-            'add_server_info': adding_server_msg,
             'server_list': add_server.objects.all(),
             }
 

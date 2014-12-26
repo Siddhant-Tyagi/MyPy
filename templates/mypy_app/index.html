@@ -14,6 +14,7 @@
 	cursor: pointer;
 	font-weight: bold;
 	padding: 8px 16px;
+	margin: 5px;
 	left-margin: 10px;
      }
 
@@ -22,18 +23,25 @@
 {% load static %}
 <body>
 <h1>MyPy response</h1>
-{{ add_server_info }}
 {% if server_list %}
-<ul>
+
+	<form action="/mypy/" method="post">
+        {% csrf_token %}
 	{% for server in server_list %}
-	<li>{{ server.mysql_server_name }}</li>
+	<input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
+	     {{ server.mysql_server_name }}<br>
 	{% endfor %}
-</ul>
+	<br>
+	   <span> <input type="submit" value="Delete Server" class="btn">
+	</form>
+
 {% endif %}
+
 <form action="/mypy/add_server/" method="post">
 	{% csrf_token %}
 	<input type="submit" value="Add Server" class="btn">
 </form>
+</span>
 </body>
 
 </html>
