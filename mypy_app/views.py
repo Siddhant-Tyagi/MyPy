@@ -26,7 +26,6 @@ def adding_server(request):
     else:
         form = Add_Server_Form()
         adding_server_msg = ""
-    print "how come i am here" 
     return render_to_response('mypy_app/add_server.html', {'form': form, \
             'add_server_info': adding_server_msg}, context)
 
