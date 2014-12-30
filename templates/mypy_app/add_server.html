@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html>
 <head>
-<title>Add Server</title>
-<style>
+	<title>Add Server</title>
+	<style>
 form {
 	border: 1px solid #c6c7cc;
 	border-radius: 5px;
@@ -40,38 +39,35 @@ form {
 	font-weight: bold;
 	padding: 8px 16px;
 }
-</style>
-<script type="text/javascript">
-function htmlDecode(input){
-	var e = document.createElement('div');
-	e.innerHTML = input;
-	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-}
-</script>
+	</style>
+	<script type="text/javascript">
+           function htmlDecode(input){
+	      var e = document.createElement('div');
+	      e.innerHTML = input;
+	      return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+           }         
+	</script>
 
 </head>
 
 <body>
-<p id="demo"></p>
-{% if add_server_info %}
-<script>
-function add_server_alert()
-{
+	{% if add_server_info %}
+	<script>
+           function add_server_alert(){
+	         alert(htmlDecode("{{ add_server_info }}"));
+	         window.location = "/mypy/";
+            }
+           window.onload = add_server_alert;
+	</script>
+	{% endif %}
+	<form id="adding_server" method="post" action="/mypy/add_server/">
+		<br>
+		{% csrf_token %}
+		{% for field in form.visible_fields %}
+		<span class="label">{{ field.label }}</span> {{ field }} </br></br>
+		{% endfor %}
 
-	alert(htmlDecode("{{ add_server_info }}"));
-	window.location = "/mypy/";
-}
-window.onload = add_server_alert;
-</script>
-{% endif %}
-<form id="adding_server" method="post" action="/mypy/add_server/">
-	<br>
-	{% csrf_token %}
-	{% for field in form.visible_fields %}
-	<span class="label">{{ field.label }}</span> {{ field }} </br></br>
-	{% endfor %}
-
-	<input type="submit" name="submit" value="Add Server" class="btn" />
-</form>
+		<input type="submit" name="submit" value="Add Server" class="btn" />
+	</form>
 </body>
 </html>

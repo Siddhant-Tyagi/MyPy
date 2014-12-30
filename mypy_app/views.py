@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from mypy_app.models import add_server
 from mypy_app.forms import Add_Server_Form
 from mypy_mysqldb import *
+from sqlite_operations import *
 
 def adding_server(request):
     context = RequestContext(request)
@@ -36,8 +37,12 @@ def index(request):
     #print "inside index: " + adding_server_msg
     #current_object = add_server.objects.all()[len(add_server.objects.all())-1]
     if request.method == 'POST':
+        #the delete_server_list returns the result as a list from the checkbox
+        #containing the name of the mysql_server to be deleted from the sqlite database
         delete_server_list = request.POST.getlist('delete_server_checkbox')
-        print delete_server_list
+        #calling delete_server method from sqlite_operations module
+        delete_servers(delete_server_list)
+        
     context_dict = {
             'server_list': add_server.objects.all(),
             }
