@@ -30,8 +30,13 @@ def adding_server(request):
     else:
         form = Add_Server_Form()
         adding_server_msg = ""
-    return render_to_response('mypy_app/add_server.html', {'form': form, \
-            'add_server_info': adding_server_msg}, context)
+
+    context_dict = {
+            'form': form,
+            'add_server_info': adding_server_msg,
+            'server_list': add_server.objects.all()
+            }
+    return render_to_response('mypy_app/add_server.html', context_dict , context)
 
 
 
