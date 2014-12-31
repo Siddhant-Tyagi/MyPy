@@ -40,6 +40,7 @@ form {
 	padding: 8px 16px;
 }
 	</style>
+	<!--The script htmlDecode escapes the html code in the response message-->
 	<script type="text/javascript">
            function htmlDecode(input){
 	      var e = document.createElement('div');
@@ -51,6 +52,7 @@ form {
 </head>
 
 <body>
+	<!--This script fires an alert pop up box when the add_server_info is not empty-->
 	{% if add_server_info %}
 	<script>
            function add_server_alert(){

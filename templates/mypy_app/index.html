@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<html>
-
 <head>
 <title>MyPy</title>
 
@@ -10,38 +8,55 @@
 	background: linear-gradient(#49708f, #293f50);
 	border: 0;
 	color: #fff;
-	float: left;
 	cursor: pointer;
 	font-weight: bold;
-	padding: 8px 16px;
+	
+	padding: 6px 12px;
 	margin: 5px;
-	left-margin: 10px;
+	margin-left: 2px;
      }
+     
+ul
+{
+    list-style-type: none;
+    border: 2px solid gray;
+    padding: 5px;
+    width: 185px;
+    height: 600px;
+    overflow-y: auto;
+}
 
 </style>
 </head>
 {% load static %}
 <body>
-<h1>MyPy response</h1>
+<h1>MyPy</h1><br>
 {% if server_list %}
-
+    
 	<form action="/mypy/" method="post">
         {% csrf_token %}
+    <ul>
 	{% for server in server_list %}
-	<input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
-	     {{ server.mysql_server_name }}<br>
+	<li><input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
+	     {{ server.mysql_server_name }}</li>
 	{% endfor %}
+	</ul>
+	<!--Delete server will call the index view with the checkbox values as the POST request-->
 	<br>
-	   <span> <input type="submit" value="Delete Server" class="btn">
+	<span>
+	<input type="submit" value="Delete" class="btn">
 	</form>
-
-{% endif %}
-
-<form action="/mypy/add_server/" method="post">
+	<!--Add server will call the adding_server view-->
+	<form action="/mypy/add_server/" method="post" style="float: left;">
 	{% csrf_token %}
 	<input type="submit" value="Add Server" class="btn">
-</form>
-</span>
+    </form>
+    </span>
+{% endif %}
+
+
+
+
 </body>
 
 </html>
