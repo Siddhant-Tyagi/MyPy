@@ -1,8 +1,10 @@
 <!DOCTYPE html>
+{% extends "base.html" %}
 <head>
-<title>MyPy</title>
+
 
 <style>
+{% block style %}
 .btn {
 	display: inline-block;
 	background: linear-gradient(#49708f, #293f50);
@@ -13,24 +15,25 @@
 	
 	padding: 6px 12px;
 	margin: 5px;
-	margin-left: 2px;
+	margin-left: 1.5%;
      }
      
 ul
 {
     list-style-type: none;
+    position: relative;
     border: 2px solid gray;
     padding: 5px;
-    width: 185px;
-    height: 500px;
+    width: 28vh;
+    height: 70vh;
     overflow-y: auto;
 }
-
+{% endblock %}
 </style>
 </head>
 {% load static %}
 <body>
-<h1>MyPy</h1>
+{% block body_tag %}
 
 {% if server_list %}
     
@@ -56,7 +59,7 @@ ul
     </span>
 {% endif %}
 
-
+{% endblock %}
 </body>
 
 </html>

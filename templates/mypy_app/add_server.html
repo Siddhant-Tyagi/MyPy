@@ -1,7 +1,11 @@
 <!DOCTYPE html>
+<html>
+{% extends "base.html" %}
 <head>
-	<title>Add Server</title>
-	<style>
+
+
+<style>
+{% block style %}
 form {
 	border: 1px solid #c6c7cc;
 	border-radius: 5px;
@@ -9,8 +13,8 @@ form {
 	overflow: hidden;
 	width: 450px;
 	float: left;
-	margin-top: 2%;
-	margin-left: 12%;
+	margin-top: 2.5vh;
+	margin-left: 28vh;
 }
 
 .label {
@@ -43,47 +47,53 @@ form {
 	padding: 8px 16px;
 }
 
-	</style>
-	<!--The script htmlDecode escapes the html code in the response message-->
-	<script type="text/javascript">
-          function htmlDecode(input){
-	            var e = document.createElement('div');
-	            e.innerHTML = input;
-	            return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-           }         
-	</script>
+
+{% endblock %}
+</style>
+<!--The script htmlDecode escapes the html code in the response message-->
+<script type="text/javascript">
+{% block script %}
+function htmlDecode(input){
+	var e = document.createElement('div');
+	e.innerHTML = input;
+	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}
+{% endblock %}
+</script>
 
 </head>
 
 <body>
-	{% if server_list %}
-	  <ul style="width: 150px; height: 500px; border: 2px solid gray; overflow-y: auto; float: left;">
-          <br>
-	  {% for server in server_list %}
-	  <li style="padding: 1%;">{{ server.mysql_server_name }}</li>
-	  {% endfor %}
-	  </ul>
-	{% endif %}
-	<!--This script fires an alert pop up box when the add_server_info is not null-->
-	{% if add_server_info %}
-	<script>
-           function add_server_alert(){
-	         alert(htmlDecode("{{ add_server_info }}"));
-	         window.location = "/mypy/";
-            }
-           window.onload = add_server_alert;
-	</script>
-	{% endif %}
-	<form id="adding_server" method="post" action="/mypy/add_server/">
-		<br>
-		{% csrf_token %}
-		{% for field in form.visible_fields %}
-		<span class="label">{{ field.label }}</span> {{ field }} </br></br>
-		{% endfor %}
+{% block body_tag %}
+{% if server_list %}
+<ul style="width: 24vh; height: 72vh; border: 2px solid gray; overflow-y: auto; float: left;">
+	<br>
+	{% for server in server_list %}
+	<li style="padding: 1%;">{{ server.mysql_server_name }}</li>
+	{% endfor %}
+	
+</ul>
+{% endif %}
+<!--This script fires an alert pop up box when the add_server_info is not null-->
+{% if add_server_info %}
+<script>
+function add_server_alert(){
+	alert(htmlDecode("{{ add_server_info }}"));
+	window.location = "/mypy/";
+}
+window.onload = add_server_alert;
+</script>
+{% endif %}
+<form id="adding_server" method="post" action="/mypy/add_server/">
+	<br>
+	{% csrf_token %}
+	{% for field in form.visible_fields %}
+	<span class="label">{{ field.label }}</span> {{ field }} </br></br>
+	{% endfor %}
 
-		<input type="submit" name="submit" value="Add Server" class="btn" />
-	</form>
+	<input type="submit" name="submit" value="Add Server" class="btn" />
+</form>
 
-
+{% endblock %}
 </body>
 </html>
