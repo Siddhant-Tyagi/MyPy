@@ -8,7 +8,9 @@ form {
 	font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
 	overflow: hidden;
 	width: 450px;
-	float: top;
+	float: left;
+	margin-top: 2%;
+	margin-left: 12%;
 }
 
 .label {
@@ -55,9 +57,10 @@ form {
 
 <body>
 	{% if server_list %}
-	  <ul style="width: 185px; height: 600px; border: 2px solid gray; overflow-y: auto;">
+	  <ul style="width: 150px; height: 500px; border: 2px solid gray; overflow-y: auto; float: left;">
+          <br>
 	  {% for server in server_list %}
-	      <li>{{ server.mysql_server_name }}</li>
+	  <li style="padding: 1%;">{{ server.mysql_server_name }}</li>
 	  {% endfor %}
 	  </ul>
 	{% endif %}

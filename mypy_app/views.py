@@ -22,8 +22,12 @@ def adding_server(request):
             #if the connection to MySQL server fails, delete this entry from the sqlite db
             if "successful" not in adding_server_msg:
                 current_object.delete()
-            return render_to_response('mypy_app/add_server.html', {'form': form, \
-                    'add_server_info': adding_server_msg}, context)
+            return render_to_response('mypy_app/add_server.html', 
+                    {
+                        'form': form, 
+                        'add_server_info': adding_server_msg,
+                        'server_list': add_server.objects.all()\
+                        }, context)
         else:
             print form.errors
             adding_server_msg = ""

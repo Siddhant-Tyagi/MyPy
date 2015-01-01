@@ -22,7 +22,7 @@ ul
     border: 2px solid gray;
     padding: 5px;
     width: 185px;
-    height: 600px;
+    height: 500px;
     overflow-y: auto;
 }
 
@@ -30,15 +30,16 @@ ul
 </head>
 {% load static %}
 <body>
-<h1>MyPy</h1><br>
+<h1>MyPy</h1>
 
 {% if server_list %}
     
 	<form action="/mypy/" method="post">
         {% csrf_token %}
-    <ul>
+        <ul>
 	{% for server in server_list %}
-	<li><input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
+	<li style="padding: 1.5%;">
+	<input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
 	     {{ server.mysql_server_name }}</li>
 	{% endfor %}
 	</ul>
@@ -56,11 +57,6 @@ ul
 {% endif %}
 
 
-
-
-
 </body>
 
 </html>
-
-
