@@ -31,8 +31,12 @@ def adding_server(request):
         else:
             #str(form.errors)
             adding_server_msg = ""
+            #if the forms.error returns an error about the existence of the server name,
+            #adding_server_msg now contains the appropriate msg to be shown in js alert box
             if "already exists" in str(form.errors):
                 adding_server_msg = "The server name specified already exists. Please choose another name."
+
+    #if request.method is not post, render the form again
     else:
         form = Add_Server_Form()
         adding_server_msg = ""
