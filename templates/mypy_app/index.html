@@ -1,40 +1,17 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
+{% load static %}
 <head>
 
-
-<style>
-{% block style %}
-.btn {
-	display: inline-block;
-	background: linear-gradient(#49708f, #293f50);
-	border: 0;
-	color: #fff;
-	cursor: pointer;
-	font-weight: bold;
-	
-	padding: 6px 12px;
-	margin: 5px;
-	margin-left: 1.5%;
-     }
-     
-ul
-{
-    list-style-type: none;
-    position: relative;
-    border: 2px solid gray;
-    padding: 5px;
-    width: 28vh;
-    height: 70vh;
-    overflow-y: auto;
-}
+{% block heading %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
+<h1>MyPy</h1>
 {% endblock %}
-</style>
+
 </head>
-{% load static %}
+
 <body>
 {% block body_tag %}
-
 {% if server_list %}
     
 	<form action="/mypy/" method="post">

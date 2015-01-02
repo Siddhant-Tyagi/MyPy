@@ -1,0 +1,23 @@
+.btn {
+	display: inline-block;
+	background: linear-gradient(#49708f, #293f50);
+	border: 0;
+	color: #fff;
+	cursor: pointer;
+	font-weight: bold;
+	
+	padding: 1vh 2vh;
+	margin: 1vh;
+     }
+     
+ul
+{
+    list-style-type: none;
+    position: relative;
+    margin-left: 1vh;
+    border: 2px solid gray;
+    padding: 5px;
+    width: 24vh;
+    height: 70vh;
+    overflow-y: auto;
+}

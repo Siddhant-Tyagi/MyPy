@@ -29,8 +29,10 @@ def adding_server(request):
                         'server_list': add_server.objects.all()\
                         }, context)
         else:
-            print form.errors
+            #str(form.errors)
             adding_server_msg = ""
+            if "already exists" in str(form.errors):
+                adding_server_msg = "The server name specified already exists. Please choose another name."
     else:
         form = Add_Server_Form()
         adding_server_msg = ""

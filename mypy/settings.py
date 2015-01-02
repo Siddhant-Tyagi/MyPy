@@ -60,6 +60,7 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
         TEMPLATE_PATH,
         )
+
 STATICFILES_DIRS = (
             STATIC_PATH,
             )

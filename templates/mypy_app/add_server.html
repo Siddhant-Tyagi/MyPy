@@ -1,72 +1,21 @@
 <!DOCTYPE html>
 <html>
 {% extends "base.html" %}
+{% load static %}
 <head>
 
-
-<style>
-{% block style %}
-form {
-	border: 1px solid #c6c7cc;
-	border-radius: 5px;
-	font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
-	overflow: hidden;
-	width: 450px;
-	float: left;
-	margin-top: 2.5vh;
-	margin-left: 28vh;
-}
-
-.label {
-	color: #395870;
-	display: block;
-	font-weight: bold;
-	margin-bottom: 7px;
-	margin-left: 10px;
-}
-.input {
-	background: #fff;
-	margin: 10px;
-	border: 1px solid #c6c7cc;
-	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .1);
-	color: #636466;
-	padding: 6px;
-	margin-top: 1px;
-	margin-bottom: 15px;
-	width: 90%;
-}
-
-.btn {
-	display: inline-block;
-	background: linear-gradient(#49708f, #293f50);
-	border: 0;
-	color: #fff;
-	float: right;
-	cursor: pointer;
-	font-weight: bold;
-	padding: 8px 16px;
-}
-
-
+{% block heading %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/add_server.css' %}" />
+    <script src="{% static 'js/add_server.js' %}"></script>
+   <h1>MyPy</h1>
 {% endblock %}
-</style>
-<!--The script htmlDecode escapes the html code in the response message-->
-<script type="text/javascript">
-{% block script %}
-function htmlDecode(input){
-	var e = document.createElement('div');
-	e.innerHTML = input;
-	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-}
-{% endblock %}
-</script>
 
 </head>
 
 <body>
 {% block body_tag %}
 {% if server_list %}
-<ul style="width: 24vh; height: 72vh; border: 2px solid gray; overflow-y: auto; float: left;">
+<ul style="width: 20vh; height: 72vh; border: 2px solid gray; overflow-y: auto; float: left; margin-left: 1vh;">
 	<br>
 	{% for server in server_list %}
 	<li style="padding: 1%;">{{ server.mysql_server_name }}</li>
@@ -79,7 +28,8 @@ function htmlDecode(input){
 <script>
 function add_server_alert(){
 	alert(htmlDecode("{{ add_server_info }}"));
-	window.location = "/mypy/";
+	if("{{ add_server_info }}".search("already exists") == -1)
+		window.location = "/mypy/";
 }
 window.onload = add_server_alert;
 </script>
