@@ -1,6 +1,8 @@
 <!DOCTYPE html>
+   {% load static %}
    <html lang="en">
       <head>
+		 <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}" />
          <div id="heading">{% block heading %}<h1>MyPy</h1>{% endblock %}</div>
          <title>{% block title %}MyPy- MySQL Monitoing Tool{% endblock %}</title>
 	 <style>{% block style %}{% endblock %}</style>
@@ -8,6 +10,10 @@
       </head>
 
       <body id="body_tag">
+       <form action="/mypy/" method="get">
+          <button type="submit" formaction="/mypy/add_server/" class="main_btn">Monitors</button>
+          <button type="submit" formaction="/mypy/add_server/" class="main_btn" style="margin-left: 27%; position: absolute;">Real-Time</button>
+       </form>
       {% block body_tag %}
       {% endblock %}
       </body>

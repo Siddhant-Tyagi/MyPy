@@ -6,8 +6,8 @@
 	cursor: pointer;
 	font-weight: bold;
 	
-	padding: 1vh 2vh;
-	margin: 1vh;
+	padding: 0.5vh 1vh;
+	margin: 0.5vh;
      }
      
 ul
@@ -16,8 +16,8 @@ ul
     position: relative;
     margin-left: 1vh;
     border: 2px solid gray;
-    padding: 5px;
-    width: 24vh;
+    width: 20vh;
     height: 70vh;
+    padding: 5px;
     overflow-y: auto;
 }

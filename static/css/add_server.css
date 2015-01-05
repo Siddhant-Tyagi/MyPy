@@ -1,12 +1,13 @@
-form {
+.input_form_css {
 	border: 1px solid #c6c7cc;
 	border-radius: 5px;
 	font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
 	overflow: hidden;
-	width: 450px;
+	position: fixed;
+	top: 20vh;
 	float: left;
-	margin-top: 2.5vh;
-	margin-left: 28vh;
+	width: 450px;
+	margin-left: 50vh;
 }
 
 .label {
