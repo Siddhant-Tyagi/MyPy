@@ -15,7 +15,7 @@
 {% block body_tag %}
 {% if server_list %}
 <span>
-<ul style="position:relative; width: 14.5vh; height: 70vh; border: 2px solid gray; overflow-y: auto; margin-left: 1vh; padding: 20px;">
+<ul style="position:relative; width: 19vh; height: 70vh; border: 2px solid gray; overflow-y: auto; margin-left: 1vh; padding: 20px;">
 	{% for server in server_list %}
 	<li style="padding: 1.6%;">{{ server.mysql_server_name }}</li>
 	{% endfor %}
@@ -27,7 +27,8 @@
 <script>
 function add_server_alert(){
 	alert(htmlDecode("{{ add_server_info }}"));
-	if("{{ add_server_info }}".search("already exists") == -1)
+	//if the connection to MySQL server is successful then redirect to mypy page
+	if("{{ add_server_info }}".search("successful") != -1)
 		window.location = "/mypy/";
 }
 window.onload = add_server_alert;
