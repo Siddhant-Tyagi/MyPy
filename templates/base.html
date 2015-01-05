@@ -11,8 +11,10 @@
 
       <body id="body_tag">
        <form action="/mypy/" method="get">
-          <button type="submit" formaction="/mypy/add_server/" class="main_btn">Monitors</button>
-          <button type="submit" formaction="/mypy/add_server/" class="main_btn" style="margin-left: 27%; position: absolute;">Real-Time</button>
+		   <div style="position: fixed; top: 1.8%; left: 20%;">
+          <button type="submit" formaction="/mypy/add_server/" class="main_btn" style="width: 20%;">Monitors</button>
+          <button type="submit" formaction="/mypy/add_server/" class="main_btn" style="width: 20%;  margin-left:32%;">Real-Time</button>
+       </div>
        </form>
       {% block body_tag %}
       {% endblock %}
