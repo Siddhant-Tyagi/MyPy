@@ -69,3 +69,14 @@ def index(request):
 
     return render_to_response('mypy_app/index.html', context_dict, context)
 
+
+def monitors(request):
+    context = RequestContext(request)
+    context_dict = {"test_var": "monitors page",}
+    return render_to_response('mypy_app/monitors.html', context_dict, context)
+
+
+def realtime(request):
+    context = RequestContext(request)
+    context_dict = {"test_var": "realtime page",}
+    return render_to_response('mypy_app/realtime.html', context_dict, context)
