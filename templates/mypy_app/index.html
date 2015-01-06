@@ -5,8 +5,11 @@
 
 {% block heading %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
+<script src="{% static 'js/jquery-1.11.2.js' %}"></script>
+
 <h1>MyPy</h1>
 {% endblock %}
+
 
 </head>
 
@@ -18,8 +21,19 @@
         {% csrf_token %}
         <ul>
 	{% for server in server_list %}
+	<script>
+     $(document).ready(function(){
+		$("#{{server.mysql_server_name}}").click(function(){
+			var server_selection = $("#{{server.mysql_server_name}}").val();
+			$.get('/mypy/', {server_details_display_list: server_selection}, function({{data}}){
+				$("#server_details").html({{data}});
+			})
+			})
+		})
+    </script>
+
 	<li style="padding: 1.5%;">
-	<input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
+	<input type="checkbox" name="delete_server_checkbox" id="{{server.mysql_server_name}}" value="{{server.mysql_server_name}}"/>
 	     {{ server.mysql_server_name }}</li>
 	{% endfor %}
 	</ul>
@@ -35,7 +49,7 @@
     </form>
     </span>
 {% endif %}
-
+<p id="server_details"></p>
 {% endblock %}
 </body>
 

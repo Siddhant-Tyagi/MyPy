@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-    <head>
-    </head>
-    
-    <body>
-		{{ test_var }}
-    </body>
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script>
+$(document).ready(function(){
+		$("#t1").click(function(){
+			alert("Value: " + $("#t1").val());
+			});
+		});
+		</script>
+	</head>
 
+	<body>
+		<p>Name: <input type="checkbox" id="t1" value="chk1"></p>
+	</body>
 </html>
+
+
