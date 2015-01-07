@@ -54,29 +54,36 @@ def adding_server(request):
 
 def index(request):
     context = RequestContext(request)
-    server_name = ""
-    #print "inside index: " + adding_server_msg
-    #current_object = add_server.objects.all()[len(add_server.objects.all())-1]
+    #check if request method is POST
     if request.method == 'POST':
-        server_name = request.POST.get("server_details_display_list") 
-        print server_name
-        #the delete_server_list returns the result as a list from the checkbox
-        #containing the name of the mysql_server to be deleted from the sqlite database
-        delete_server_list = request.POST.getlist('delete_server_checkbox')
-        #print delete_server_list
-        #calling delete_server method from sqlite_operations module
-        delete_servers(delete_server_list)
-
-    """if request.is_ajax():
-        server_name = request.POST.get("server_details_display_list")
-        print server_name"""
+        #check if request is ajax and return jason response
+        #this will be used to return MySQL counter's data to the template
+        if request.is_ajax():
+            #returns the server name selected one at a time from the list of checkbox
+            server_name = request.POST.get("server_details_display_list")
+            #builds the dictionary data type to be passed as jason response
+            json_data = {'server_name': server_name}
+            #json.dumps converts the dictionary data type to JSON response
+            return HttpResponse(json.dumps(json_data))
+        
+        #deletes the server(s) selected from the SQLite database
+        if request.POST['delete_server'] == 'Delete':
+            #the delete_server_list returns the result as a list from the checkbox
+            #containing the name of the mysql_server to be deleted from the sqlite database
+            delete_server_list = request.POST.getlist('delete_server_checkbox')
+            #print delete_server_list
+            #calling delete_server method from sqlite_operations module
+            delete_servers(delete_server_list)
+            context_dict = {
+                    'server_list': add_server.objects.all(),
+                    }
+            return render_to_response('mypy_app/index.html', context_dict, context) 
+        
      
     #building the updated context from the database
     context_dict = {
-            'server_list': add_server.objects.all(),
-            'data': server_name, 
+            'server_list': add_server.objects.all(), 
             }
-
 
     return render_to_response('mypy_app/index.html', context_dict, context)
 

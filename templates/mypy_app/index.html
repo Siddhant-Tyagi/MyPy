@@ -8,14 +8,15 @@
 <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
 <script>
      $(document).ready(function(){
-		$("#server_list_form :checkbox").one('click', function(){
+		$("#server_list_form :checkbox").change(function(){
 			var $this = $(this);
 			if($this.is(':checked')){
 				var server_selection = $this.val();
-				alert(server_selection);
+				//alert(server_selection);
 				$.post('/mypy/', {server_details_display_list: server_selection, 
-					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(data){
-						$("#server_details").html(data);
+					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(response){
+					        resp = JSON.parse(response);
+						$("#server_details").html(resp.server_name);
 						})
 					}
 				});
@@ -47,7 +48,7 @@
 	<!--Delete server will call the index view with the checkbox values as the POST request-->
 	<br>
 	<span>
-	<input type="submit" value="Delete" class="btn">
+	<input type="submit" value="Delete" class="btn" name="delete_server">
 	</form>
 	<!--Add server will call the adding_server view-->
 	<form action="/mypy/add_server/" method="post" style="float: left;">
