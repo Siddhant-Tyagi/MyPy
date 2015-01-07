@@ -6,7 +6,24 @@
 {% block heading %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
 <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
-
+<script>
+     $(document).ready(function(){
+		$("#server_list_form :checkbox").one('click', function(){
+			var $this = $(this);
+			if($this.is(':checked')){
+				var server_selection = $this.val();
+				alert(server_selection);
+				$.post('/mypy/', {server_details_display_list: server_selection, 
+					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(data){
+						$("#server_details").html(data);
+						})
+					}
+				});
+			});
+			
+		
+			
+    </script>
 <h1>MyPy</h1>
 {% endblock %}
 
@@ -17,23 +34,13 @@
 {% block body_tag %}
 {% if server_list %}
     
-	<form action="/mypy/" method="post">
+	<form action="/mypy/" method="post" id="server_list_form">
         {% csrf_token %}
         <ul>
 	{% for server in server_list %}
-	<script>
-     $(document).ready(function(){
-		$("#{{server.mysql_server_name}}").click(function(){
-			var server_selection = $("#{{server.mysql_server_name}}").val();
-			$.get('/mypy/', {server_details_display_list: server_selection}, function({{data}}){
-				$("#server_details").html({{data}});
-			})
-			})
-		})
-    </script>
 
 	<li style="padding: 1.5%;">
-	<input type="checkbox" name="delete_server_checkbox" id="{{server.mysql_server_name}}" value="{{server.mysql_server_name}}"/>
+	<input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
 	     {{ server.mysql_server_name }}</li>
 	{% endfor %}
 	</ul>

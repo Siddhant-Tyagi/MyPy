@@ -1,4 +1,6 @@
 from django.http import HttpResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from mypy_app.models import add_server
@@ -56,15 +58,18 @@ def index(request):
     #print "inside index: " + adding_server_msg
     #current_object = add_server.objects.all()[len(add_server.objects.all())-1]
     if request.method == 'POST':
+        server_name = request.POST.get("server_details_display_list") 
+        print server_name
         #the delete_server_list returns the result as a list from the checkbox
         #containing the name of the mysql_server to be deleted from the sqlite database
         delete_server_list = request.POST.getlist('delete_server_checkbox')
-        print delete_server_list
+        #print delete_server_list
         #calling delete_server method from sqlite_operations module
         delete_servers(delete_server_list)
 
-    if request.method == "GET":
-        server_name = request.GET.get("server_details_display_list")
+    """if request.is_ajax():
+        server_name = request.POST.get("server_details_display_list")
+        print server_name"""
      
     #building the updated context from the database
     context_dict = {
