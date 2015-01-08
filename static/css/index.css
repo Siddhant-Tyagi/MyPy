@@ -16,8 +16,27 @@ ul
     position: relative;
     margin-left: 1vh;
     border: 2px solid gray;
-    width: 22vh;
-    height: 70vh;
+    width: 16vh;
+    height: 60vh;
     padding: 5px;
-    overflow-y: auto;
+    overflow-y: scroll;
+}
+
+#server_details {
+    display: inline-block;
+    position: relative;
+    white-space: nowrap;
+    top: -68.7vh;
+    left: 20.5vh;
+    border: 1.5px solid #49708f;
+    width: 105vh;
+    height: 60.7vh;
+    overflow-x: scroll;
+
+}
+
+.server_class  {
+    display: inline-block;
+    margin: 2vh;
+    
 }

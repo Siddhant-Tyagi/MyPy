@@ -4,6 +4,7 @@
 <head>
 
 {% block heading %}
+<meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
 <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
 <script>
@@ -14,11 +15,14 @@
 				var server_selection = $this.val();
 				//alert(server_selection);
 				$.post('/mypy/', {server_details_display_list: server_selection, 
-					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(response){
-					        resp = JSON.parse(response);
-						$("#server_details").html(resp.server_name);
+					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(json_response){
+					        response_dict = JSON.parse(json_response);
+						$("#server_details").append("<div class='server_class' id='" + response_dict.server_name + "'>" + response_dict.server_name + "</div>");
 						})
 					}
+			else{
+				$("#" + $this.val()).hide();
+			}
 				});
 			});
 			
@@ -33,6 +37,7 @@
 
 <body>
 {% block body_tag %}
+<br>
 {% if server_list %}
     
 	<form action="/mypy/" method="post" id="server_list_form">
@@ -57,7 +62,7 @@
     </form>
     </span>
 {% endif %}
-<p id="server_details"></p>
+<div id="server_details"></div>
 {% endblock %}
 </body>
 
