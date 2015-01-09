@@ -1,24 +1,25 @@
 .btn {
 	display: inline-block;
 	background: linear-gradient(#49708f, #293f50);
+	font: 1.5vh/1.5vw "Helvetica Neue", Helvetica, Arial, sans-serif;
 	border: 0;
 	color: #fff;
 	cursor: pointer;
-	font-weight: bold;
-	
-	padding: 0.5vh 1vh;
-	margin: 0.5vh;
+	height: 3.5vh;
+	width: 9.4vw;
+	padding: 0.5vw 1vh;
+	margin: 0.26vw;
      }
      
 ul
 {
     list-style-type: none;
     position: relative;
-    margin-left: 1vh;
-    border: 2px solid gray;
-    width: 16vh;
+    margin-left: 0.05vw;
+    border: 0.25vw solid gray;
+    width: 15vw;
     height: 60vh;
-    padding: 5px;
+    padding: 0.2vw;
     overflow-y: scroll;
 }
 
@@ -26,10 +27,9 @@ ul
     display: inline-block;
     position: relative;
     white-space: nowrap;
-    top: -68.7vh;
-    left: 20.5vh;
-    border: 1.5px solid #49708f;
-    width: 105vh;
+    top: -68.8vh;
+    left: 17.7vw;
+    width: 81vw;
     height: 60.7vh;
     overflow-x: scroll;
 
@@ -37,6 +37,21 @@ ul
 
 .server_class  {
     display: inline-block;
-    margin: 2vh;
+    margin-left: 2vh;
     
 }
+
+body
+{
+    position: fixed; 
+    overflow-y: scroll;
+    width: 100vw;
+}
+
+hr {
+     width: 80vw;
+     float: right;
+     margin-right: 2vw;
+     
+}
+

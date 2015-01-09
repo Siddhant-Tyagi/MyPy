@@ -1,41 +1,44 @@
 .input_form_css {
-	border: 1px solid #c6c7cc;
-	border-radius: 5px;
-	font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	border: 0.25vw solid #c6c7cc;
+	border-radius: 0.5vw;
+	font: 1.6vh/1.6vw "Helvetica Neue", Helvetica, Arial, sans-serif;
 	overflow: hidden;
 	position: fixed;
-	top: 15%;
+	top: 15vh;
 	float: left;
-	width: 450px;
-	margin-left: 34%;
+	width: 40vw;
+	margin-left: 32vw;
 }
 
 .label {
 	color: #395870;
 	display: block;
 	font-weight: bold;
-	margin-bottom: 7px;
-	margin-left: 10px;
+	margin-bottom: 1vh;
+	margin-left: 1.3vw;
 }
 .input {
 	background: #fff;
-	margin: 10px;
-	border: 1px solid #c6c7cc;
-	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .1);
+	margin: 1vh;
+	border: 0.23vh solid #c6c7cc;
+	box-shadow: inset 0 0.25vw 0.25vh rgba(0, 0, 0, .1);
 	color: #636466;
-	padding: 6px;
-	margin-top: 1px;
-	margin-bottom: 15px;
+	padding: 0.5vh;
+	margin-top: 0.1vh;
+	margin-bottom: 1.6vh;
+	margin-left: 1.3vw;
 	width: 90%;
 }
 
 .btn {
 	display: inline-block;
 	background: linear-gradient(#49708f, #293f50);
+	font: 1.5vw/1.5vh "Helvetica Neue", Helvetica, Arial, sans-serif;
 	border: 0;
 	color: #fff;
 	float: right;
 	cursor: pointer;
-	font-weight: bold;
-	padding: 8px 16px;
+	width: 14vw;
+	height: 4vh;
+	padding: 0.5vw 1.5vh;
 }

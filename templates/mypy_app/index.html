@@ -24,9 +24,7 @@
 				$("#" + $this.val()).hide();
 			}
 				});
-			});
-			
-		
+			});		
 			
     </script>
 <h1>MyPy</h1>
@@ -38,6 +36,7 @@
 <body>
 {% block body_tag %}
 <br>
+<hr>
 {% if server_list %}
     
 	<form action="/mypy/" method="post" id="server_list_form">
@@ -53,7 +52,7 @@
 	<!--Delete server will call the index view with the checkbox values as the POST request-->
 	<br>
 	<span>
-	<input type="submit" value="Delete" class="btn" name="delete_server">
+	<input type="submit" value="Delete" class="btn" name="delete_server" style="width: 5.5vw;">
 	</form>
 	<!--Add server will call the adding_server view-->
 	<form action="/mypy/add_server/" method="post" style="float: left;">

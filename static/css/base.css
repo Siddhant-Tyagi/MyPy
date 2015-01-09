@@ -1,14 +1,14 @@
 .main_btn {
-	display: block;
-	font: 20px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
-	position: fixed;
+	display: inline-block;
+	font: 2vw/2vh "Helvetica Neue", Helvetica, Arial, sans-serif;
+	position: relative;
 	background: linear-gradient(#49708f, #293f50);
 	border: 0;
 	color: #fff;
 	cursor: pointer;
-	height: 4.5vh;
-	width: 18%;
+	height: 6vh;
+	width: 18vw;
 	font-weight: bold;
-	padding: 1vh 2.5vh;
-	margin-left: 10%;
+	padding: 0.5vw 1vh;
+	margin-left: 7vw;
      }
