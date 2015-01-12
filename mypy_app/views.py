@@ -61,8 +61,12 @@ def index(request):
         if request.is_ajax():
             #returns the server name selected one at a time from the list of checkbox
             server_name = request.POST.get("server_details_display_list")
-            #builds the dictionary data type to be passed as jason response
-            json_data = {'server_name': server_name}
+            #builds the dictionary data type to be passed as json response
+            #this dict contains the various MySQL counters
+            json_data = {
+                    'server_name': server_name,
+                    'test_var': "test var from index.views and this should be in a new line",
+                    }
             #json.dumps converts the dictionary data type to JSON response
             return HttpResponse(json.dumps(json_data))
         

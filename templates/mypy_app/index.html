@@ -16,8 +16,14 @@
 				//alert(server_selection);
 				$.post('/mypy/', {server_details_display_list: server_selection, 
 					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(json_response){
-					        response_dict = JSON.parse(json_response);
-						$("#server_details").append("<div class='server_class' id='" + response_dict.server_name + "'>" + response_dict.server_name + "</div>");
+					    response_dict = JSON.parse(json_response);
+					    var html_response = "<div class='server_class' id='" + response_dict.server_name + "'>" +
+						                        "<div class='server_heading'>" + response_dict.server_name + "</div>" + 
+						                            "<div class='server_counters_list'>" +
+						                                response_dict.test_var +
+						                            "</div>" +
+						                     "</div>"    
+						$("#server_details").append(html_response);
 						})
 					}
 			else{
@@ -34,35 +40,35 @@
 </head>
 
 <body>
-{% block body_tag %}
-<br>
-<hr>
-{% if server_list %}
+    {% block body_tag %}
+        <br>
+        <hr>
+        {% if server_list %}
     
-	<form action="/mypy/" method="post" id="server_list_form">
-        {% csrf_token %}
-        <ul>
-	{% for server in server_list %}
-
-	<li style="padding: 1.5%;">
-	<input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
-	     {{ server.mysql_server_name }}</li>
-	{% endfor %}
-	</ul>
-	<!--Delete server will call the index view with the checkbox values as the POST request-->
-	<br>
-	<span>
-	<input type="submit" value="Delete" class="btn" name="delete_server" style="width: 5.5vw;">
-	</form>
-	<!--Add server will call the adding_server view-->
-	<form action="/mypy/add_server/" method="post" style="float: left;">
-	{% csrf_token %}
-	<input type="submit" value="Add Server" class="btn">
-    </form>
-    </span>
-{% endif %}
-<div id="server_details"></div>
-{% endblock %}
+	        <form action="/mypy/" method="post" id="server_list_form">
+                {% csrf_token %}
+                <ul id="side_list">
+	                {% for server in server_list %}
+	                
+	                    <li style="padding: 1.5%;">
+	                    <input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
+	                    {{ server.mysql_server_name }}</li>
+	                {% endfor %}
+	            </ul>
+	            <!--Delete server will call the index view with the checkbox values as the POST request-->
+	            <br>
+	            <span>
+	                <input type="submit" value="Delete" class="btn" name="delete_server" style="width: 5.5vw;">
+	        </form>
+	        <!--Add server will call the adding_server view-->
+	        <form action="/mypy/add_server/" method="post" style="float: left;">
+	            {% csrf_token %}
+	            <input type="submit" value="Add Server" class="btn">
+            </form>
+                </span>
+        {% endif %}
+        <div id="server_details"></div>
+    {% endblock %}
 </body>
 
 </html>

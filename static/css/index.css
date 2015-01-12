@@ -11,7 +11,7 @@
 	margin: 0.26vw;
      }
      
-ul
+#side_list
 {
     list-style-type: none;
     position: relative;
@@ -39,6 +39,26 @@ ul
     display: inline-block;
     margin-left: 2vh;
     
+}
+
+.server_heading  {
+    font: 1.6vh/1.6vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #fff;
+    text-align: center;
+    padding: 0.6vh;
+    width: 18vw;
+    height: 1.8vh;
+    background: #6D8DA5;
+    margin-bottom: 1.6vh;
+}
+
+.server_counters_list  {
+    width: 17vw;
+    white-space:normal;
+    font: 1.565vh/1.565vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-align: center;
+    padding: 0.5vh;
+   
 }
 
 body
