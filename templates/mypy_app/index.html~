@@ -12,7 +12,9 @@
 		$("#server_list_form :checkbox").change(function(){
 			var $this = $(this);
 			if($this.is(':checked')){
+			    //alert("inside if");
 				var server_selection = $this.val();
+				//alert(server_selection);
 				$.post('/mypy/', {server_details_display_list: server_selection, 
 					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(json_response){
 					    response_dict = JSON.parse(json_response);
@@ -26,6 +28,7 @@
 						})
 					}
 			else{
+			    //alert("inside else");
 				$("#" + $this.val()).remove();
 			}
 				});
