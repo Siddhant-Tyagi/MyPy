@@ -59,9 +59,10 @@
                 <ul id="side_list">
 	                {% for server in server_list %}
 	                
-	                    <li style="padding: 1.5%;">
-	                    <input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
-	                    {{ server.mysql_server_name }}</li>
+	                    <li class="side_list_padding">
+	                        <input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
+	                            {{ server.mysql_server_name }}
+	                    </li>
 	                {% endfor %}
 	            </ul>
 	            <!--Delete server will call the index view with the checkbox values as the POST request-->
