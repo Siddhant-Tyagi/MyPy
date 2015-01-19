@@ -4,7 +4,7 @@
 	font: 1.6vh/1.6vw "Helvetica Neue", Helvetica, Arial, sans-serif;
 	overflow: hidden;
 	position: fixed;
-	top: 15vh;
+	top: 25vh;
 	float: left;
 	width: 40vw;
 	margin-left: 32vw;
@@ -41,4 +41,8 @@
 	width: 14vw;
 	height: 4vh;
 	padding: 0.5vw 1.5vh;
+}
+
+.server_list_padding  {
+    padding: 1.6%;
 }

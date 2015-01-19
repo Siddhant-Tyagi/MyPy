@@ -29,3 +29,10 @@
     margin-top: 2vh;
     
 }
+
+body
+{
+    position: fixed; 
+    overflow-y: scroll;
+    width: 100vw;
+}

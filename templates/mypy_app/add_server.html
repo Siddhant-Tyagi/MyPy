@@ -12,38 +12,41 @@
 </head>
 
 <body>
-{% block body_tag %}
-{% if server_list %}
-<span>
-<ul style="position:relative; width: 12vw; height: 70vh; border: 0.25vw solid gray; overflow-y: auto; margin-left: 0.08vw; padding: 2.1vw;">
-	{% for server in server_list %}
-	<li style="padding: 1.6%;">{{ server.mysql_server_name }}</li>
-	{% endfor %}
-	
-</ul>
-{% endif %}
-<!--This script fires an alert pop up box when the add_server_info is not null-->
-{% if add_server_info %}
-<script>
-function add_server_alert(){
-	alert(htmlDecode("{{ add_server_info }}"));
-	//if the connection to MySQL server is successful then redirect to mypy page
-	if("{{ add_server_info }}".search("successful") != -1)
-		window.location = "/mypy/";
-}
-window.onload = add_server_alert;
-</script>
-{% endif %}
-<form id="adding_server" method="post" action="/mypy/add_server/" class="input_form_css">
-	<br>
-	{% csrf_token %}
-	{% for field in form.visible_fields %}
-	<span class="label">{{ field.label }}</span> {{ field }} </br></br>
-	{% endfor %}
+    {% block body_tag %}
+        {% if server_list %}
+            <span>
+                <ul style="position:relative; width: 12vw; height: 70vh; border: 0.25vw solid gray; 
+                 overflow-y: auto; margin-left: 0.08vw; padding: 2.1vw;">
+	             {% for server in server_list %}
+	                 <li class="server_list_padding">{{ server.mysql_server_name }}</li>
+	             {% endfor %}
+                </ul>
+                
+        {% endif %}
 
-	<input type="submit" name="submit" value="Add Server" class="btn" />
-</form>
-</span>
-{% endblock %}
+        <!--This script fires an alert pop up box when the add_server_info is not null-->
+        {% if add_server_info %}
+            <script>
+                function add_server_alert(){
+					alert(htmlDecode("{{ add_server_info }}"));
+	                //if the connection to MySQL server is successful then redirect to mypy page
+	                if("{{ add_server_info }}".search("successful") != -1)
+	                    window.location = "/mypy/";
+                }
+               window.onload = add_server_alert;
+            </script>
+        {% endif %}
+        
+        <form id="adding_server" method="post" action="/mypy/add_server/" class="input_form_css">
+	        <br>
+	        {% csrf_token %}
+	        {% for field in form.visible_fields %}
+	            <span class="label">{{ field.label }}</span> {{ field }} </br></br>
+	        {% endfor %}
+
+	        <input type="submit" name="submit" value="Add Server" class="btn" />
+        </form>
+            </span>
+    {% endblock %}
 </body>
 </html>
