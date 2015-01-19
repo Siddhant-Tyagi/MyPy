@@ -3,7 +3,10 @@
    <html lang="en">
       <head>
 		 <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}" />
-         <div id="heading">{% block heading %}<h1>MyPy</h1>{% endblock %}</div>
+		 <div id="header">
+			 <div id="heading">{% block heading %}<h1>MyPy</h1>{% endblock %}</div>
+		 </div>
+         
          <title>{% block title %}MyPy- MySQL Monitoing Tool{% endblock %}</title>
 	 <style>{% block style %}{% endblock %}</style>
 	 <script>{% block script %}{% endblock %}</script>

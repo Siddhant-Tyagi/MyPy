@@ -40,7 +40,17 @@
 
 <body>
     {% block body_tag %}
-        <br>
+        <input type="button" class="tab" value="General Info" />
+        <input type="button" class="tab" value="Connection History" style="left: 16.5vw; width: 10.2vw;" />
+        <input type="button" class="tab" value="Current Connections" style="left: 16.2vw; width: 10.6vw;" />
+        <input type="button" class="tab" value="InnoDB Cache" style="left: 15.9vw;" />
+        <input type="button" class="tab" value="Threads" style="left: 15.6vw;" />
+        <input type="button" class="tab" value="Query Cache" style="left: 15.3vw;" />
+        <input type="button" class="tab" value="Index usage" style="left: 15vw;" />
+        <input type="button" class="tab" value="Statements" style="left: 14.7vw;" />
+        <input type="button" class="tab" value="Replication" style="left: 14.4vw;" />
+        
+        
         <hr>
         {% if server_list %}
     
