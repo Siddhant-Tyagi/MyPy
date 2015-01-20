@@ -10,9 +10,20 @@
 <script>
      $(document).ready(function(){
 		
+		//$("#server_details").prepend("<div style='width: 10vw;'></div>");
 		//setting the default monitor group to general_info for landing page
 		current_monitor = "general_info";
-		
+		var general_info_counters = "<div class='monitor_group'>" +
+			                                        "<ul>" +
+			                                            "<li>Available?</li>" +
+			                                            "<li>Version</li>" +
+			                                            "<li>Running for</li>" +
+			                                            "<li>Start time</li>" +
+			                                            "<li>Default storage engine</li>" +
+			                                            "<li>InnoDB version</li>" +
+			                                        "</ul>" +
+			                                    "</div>";
+		$("#server_details").prepend(general_info_counters);
 		//this selector describes which monitor has been selected currently
 	    //only one monitor group can be selected at one time 
 		$("input.tab").click(function(){
@@ -66,11 +77,11 @@
 					    response_dict = JSON.parse(json_response);
 					    var html_response = "<div class='server_class' id='" + $this.val() + "'>" +
 						                        "<div class='server_heading'>" + response_dict.server_name + "</div>" + 
-						                            "<div class='server_counters_list'>" +
-						                                response_dict.test_var +
-						                            "</div>" +
+						                            "<ul class='server_counters_list'>" +
+						                                "<li>" + response_dict.test_var + "</li>" +
+						                            "</ul>" +
 						                     "</div>"    
-						$("#server_details").prepend(html_response);
+						$(".monitor_group").after(html_response);
 						})
 					}
 			else{

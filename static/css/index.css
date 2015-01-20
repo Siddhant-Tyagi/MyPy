@@ -51,10 +51,10 @@
     display: inline-block;
     position: relative;
     white-space: nowrap;
-    top: -71.8vh;
+    top: -70vh; 	
     left: 16.8vw;
     width: 82vw;
-    height: 64.7vh;
+    height: 68.7vh;
     overflow-x: scroll;
 
 }
@@ -73,8 +73,9 @@
     width: 18vw;
     height: 1.8vh;
     background: #6D8DA5;
-    margin-bottom: 1.6vh;
+    margin-top: -100px;
 }
+
 
 .server_counters_list  {
     width: 17vw;
@@ -107,6 +108,10 @@ hr {
 }
 
 .monitor_group  {
+    display: inline-block;
     position: relative;
-    float: left;
+    white-space: nowrap;
+    font: 1.565vh/1.565vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 0.5vh;
 }
+
