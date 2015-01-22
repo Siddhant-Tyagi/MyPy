@@ -15,12 +15,12 @@
 		current_monitor = "general_info";
 		var general_info_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li>Available?</li>" +
-			                                            "<li>Version</li>" +
-			                                            "<li>Running for</li>" +
-			                                            "<li>Start time</li>" +
-			                                            "<li>Default storage engine</li>" +
-			                                            "<li>InnoDB version</li>" +
+			                                            "<li class='counters_list_css'>Available?</li>" +
+			                                            "<li class='counters_list_css'>Version</li>" +
+			                                            "<li class='counters_list_css'>Running for</li>" +
+			                                            "<li class='counters_list_css'>Start time</li>" +
+			                                            "<li class='counters_list_css'>Default storage engine</li>" +
+			                                            "<li class='counters_list_css'>InnoDB version</li>" +
 			                                        "</ul>" +
 			                                    "</div>";
 		$("#server_details").prepend(general_info_counters);
@@ -34,12 +34,12 @@
 			        $(".monitor_group").remove();
 			        var general_info_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li>Available?</li>" +
-			                                            "<li>Version</li>" +
-			                                            "<li>Running for</li>" +
-			                                            "<li>Start time</li>" +
-			                                            "<li>Default storage engine</li>" +
-			                                            "<li>InnoDB version</li>" +
+			                                            "<li class='counters_list_css'>Available?</li>" +
+			                                            "<li class='counters_list_css'>Version</li>" +
+			                                            "<li class='counters_list_css'>Running for</li>" +
+			                                            "<li class='counters_list_css'>Start time</li>" +
+			                                            "<li class='counters_list_css'>Default storage engine</li>" +
+			                                            "<li class='counters_list_css'>InnoDB version</li>" +
 			                                        "</ul>" +
 			                                    "</div>";
 		            $("#server_details").prepend(general_info_counters);
@@ -49,12 +49,12 @@
 		            $(".monitor_group").remove();
 		            var connection_history_counters = "<div class='monitor_group'>" +
 			                                              "<ul>" +
-			                                                  "<li>Attempts</li>" +
-			                                                  "<li>Successful</li>" +
-			                                                  "<li>Percentage of max allowed reached</li>" +
-			                                                  "<li>Refused</li>" +
-			                                                  "<li>Percentage of refused connections</li>" +
-			                                                  "<li>Terminated abruptly</li>" +
+			                                                  "<li class='counters_list_css'>Attempts</li>" +
+			                                                  "<li class='counters_list_css'>Successful</li>" +
+			                                                  "<li class='counters_list_css'>Percentage of max allowed reached</li>" +
+			                                                  "<li class='counters_list_css'>Refused</li>" +
+			                                                  "<li class='counters_list_css'>Percentage of refused connections</li>" +
+			                                                  "<li class='counters_list_css'>Terminated abruptly</li>" +
 			                                              "</ul>" +
 			                                          "</div>";
 			        $("#server_details").prepend(connection_history_counters);
@@ -78,7 +78,9 @@
 					    var html_response = "<div class='server_class' id='" + $this.val() + "'>" +
 						                        "<div class='server_heading'>" + response_dict.server_name + "</div>" + 
 						                            "<ul class='server_counters_list'>" +
-						                                "<li>" + response_dict.test_var + "</li>" +
+						                                "<li style='padding: 1.6%;'>" + response_dict.test_var1 + "</li>" +
+						                                "<li style='padding: 1.6%;'>" + response_dict.test_var2 + "</li>" +
+						                                "<li style='padding: 1.6%;'>" + response_dict.test_var3 + "</li>" +
 						                            "</ul>" +
 						                     "</div>"    
 						$(".monitor_group").after(html_response);
@@ -103,25 +105,25 @@
         <input type="button" class="tab" value="General Info" id="general_info" />
         
         <input type="button" class="tab" value="Connection History" id="connection_history" 
-        style="left: 16.5vw; width: 10.8vw;" />
+        style="width: 10.8vw; left: 25.1vw;" />
         
         <input type="button" class="tab" value="Current Connections" id="current_connection" 
-        style="left: 16.2vw; width: 11.2vw;" />
+        style="width: 11.2vw; left: 36vw;" />
         
-        <input type="button" class="tab" value="InnoDB Cache" id="innodb_cache" style="left: 15.9vw;" />
+        <input type="button" class="tab" value="InnoDB Cache" id="innodb_cache" style="left: 47.3vw;" />
         
-        <input type="button" class="tab" value="Threads" id="threads" style="left: 15.6vw;" />
+        <input type="button" class="tab" value="Threads" id="threads" style="width: 7.3vw; left: 55.7vw;" />
         
-        <input type="button" class="tab" value="Query Cache" id="query_cache" style="left: 15.3vw;" />
+        <input type="button" class="tab" value="Query Cache" id="query_cache" style="left: 63.1vw;" />
         
-        <input type="button" class="tab" value="Index usage" id="index_usage" style="left: 15vw;" />
+        <input type="button" class="tab" value="Index usage" id="index_usage" style="left: 71.4vw;" />
         
-        <input type="button" class="tab" value="Statements" id="statements" style="left: 14.7vw;" />
+        <input type="button" class="tab" value="Statements" id="statements" style="left: 79.8vw;" />
         
-        <input type="button" class="tab" value="Replication" id="replication" style="left: 14.4vw;" />
+        <input type="button" class="tab" value="Replication" id="replication" style="left: 88.2vw;" />
         
         
-        <hr>
+        
         {% if server_list %}
     
 	        <form action="/mypy/" method="post" id="server_list_form">
@@ -138,7 +140,9 @@
 	            <!--Delete server will call the index view with the checkbox values as the POST request-->
 	            <br>
 	            <span>
-	                <input type="submit" value="Delete" class="btn" name="delete_server" style="width: 5.5vw;">
+	                <input type="submit" value="Delete" class="btn" name="delete_server" 
+	                style="width: 5.5vw; left: 10.7vw;">
+	                
 	        </form>
 	        <!--Add server will call the adding_server view-->
 	        <form action="/mypy/add_server/" method="post" style="float: left;">

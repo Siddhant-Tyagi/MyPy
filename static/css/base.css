@@ -14,10 +14,11 @@
      }
      
 #header  {
-    position: relative;
-    top: -1.5vh;
-    left: -1.5vw;
-    width: 105vw;
+    position: fixed;
+    top: 0vw;
+    left: 0vh;
+    left: 0vh;
+    width: 100vw;
     height: 12vh/12vw;
     background: #B6C6D2;
 }
@@ -30,9 +31,3 @@
     
 }
 
-body
-{
-    position: fixed; 
-    overflow-y: scroll;
-    width: 100vw;
-}

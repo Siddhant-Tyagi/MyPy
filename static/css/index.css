@@ -1,8 +1,8 @@
 .tab  {
 	display: inline-block;
-	position: relative;
-	top: 2vh;
-	left: 16.8vw;
+	position: fixed;
+	top: 16vh;
+	left: 16.7vw;
 	background: linear-gradient(#49708f, #293f50);
 	font: 1.4vh/1.4vw "Helvetica Neue", Helvetica, Arial, sans-serif;
 	border: 0;
@@ -21,8 +21,8 @@
 
 .btn {
 	display: inline-block;
-	position: relative;
-	top: -1vh;
+	position: fixed;
+	top: 90vh;
 	background: linear-gradient(#49708f, #293f50);
 	font: 1.5vh/1.5vw "Helvetica Neue", Helvetica, Arial, sans-serif;
 	border: 0;
@@ -32,27 +32,29 @@
 	width: 9.4vw;
 	padding: 0.5vw 1vh;
 	margin: 0.26vw;
+	left: 0.2vw;
      }
      
 #side_list
 {
     list-style-type: none;
-    top: 0.5vh;
-    position: relative;
+    top: 19vh;
+    position: fixed;
     margin-left: 0.05vw;
     border: 0.25vw solid gray;
     width: 15vw;
-    height: 65vh;
+    height: 67vh;
     padding: 0.2vw;
     overflow-y: scroll;
 }
 
 #server_details {
     display: inline-block;
-    position: relative;
+    position: fixed;
+    border: 2px solid black;
     white-space: nowrap;
-    top: -70vh; 	
-    left: 16.8vw;
+    top: 20vh; 	
+    left: 16.9vw;
     width: 82vw;
     height: 68.7vh;
     overflow-x: scroll;
@@ -62,6 +64,8 @@
 .server_class  {
     display: inline-block;
     margin-left: 2vh;
+    position: relative;
+    top: -4.4vh;
     
 }
 
@@ -86,12 +90,6 @@
    
 }
 
-body
-{
-    position: fixed; 
-    overflow-y: scroll;
-    width: 100vw;
-}
 
 hr {
      position: relative;
@@ -110,8 +108,14 @@ hr {
 .monitor_group  {
     display: inline-block;
     position: relative;
+    top: 4vh;
     white-space: nowrap;
     font: 1.565vh/1.565vw "Helvetica Neue", Helvetica, Arial, sans-serif;
     padding: 0.5vh;
+}
+
+.counters_list_css  {
+    padding: 1.6%;
+    
 }
 

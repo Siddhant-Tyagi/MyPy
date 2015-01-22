@@ -65,7 +65,9 @@ def index(request):
             #this dict contains the various MySQL counters
             json_data = {
                     'server_name': server_name,
-                    'test_var': "test var from index.views and this should be in a new line",
+                    'test_var1': "test var 1",
+                    'test_var2': "test var 2",
+                    'test_var3': "test var 3",
                     }
             #json.dumps converts the dictionary data type to JSON response
             return HttpResponse(json.dumps(json_data))
