@@ -69,6 +69,10 @@ def index(request):
                                          'available': 'yes yes', 
                                          'version': '5.6.14',
                                          },
+
+                          'connection_history' : {
+                                                'available': 'inside conn',
+                                                },
                         }
             #json.dumps converts the dictionary data type to JSON response
             return HttpResponse(json.dumps(json_data))
