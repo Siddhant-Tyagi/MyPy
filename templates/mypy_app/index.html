@@ -61,7 +61,6 @@
 			        break;
          }
 		});
-        //alert(current_monitor);
          
         
 		//this selector describes which servers are being currently selected
@@ -76,11 +75,11 @@
 					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(json_response){
 					    response_dict = JSON.parse(json_response);
 					    var html_response = "<div class='server_class' id='" + $this.val() + "'>" +
-						                        "<div class='server_heading'>" + response_dict.server_name + "</div>" + 
+						                        "<div class='server_heading'>" + response_dict.general_info.server_name + "</div>" + 
 						                            "<ul class='server_counters_list'>" +
-						                                "<li class='counters_list_css'>" + response_dict.test_var1 + "</li>" +
-						                                "<li class='counters_list_css'>" + response_dict.test_var2 + "</li>" +
-						                                "<li class='counters_list_css'>" + response_dict.test_var3 + "</li>" +
+						                                "<li class='counters_list_css'>" + response_dict.general_info.available + "</li>" +
+						                                "<li class='counters_list_css'>" + response_dict.general_info.version + "</li>" +
+						                                "<li class='counters_list_css'>" + "test" + "</li>" +
 						                            "</ul>" +
 						                     "</div>"    
 						$(".monitor_group").after(html_response);
@@ -152,6 +151,7 @@
                 </span>
         {% endif %}
         <div id="server_details"></div>
+        
     {% endblock %}
 </body>
 

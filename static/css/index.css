@@ -14,6 +14,7 @@
 	padding: 0.5vw 1vh;
 	width: 8.3vw;
 	font-weight: bold;
+	line-height: 2vh;
 	
 }
 
@@ -32,6 +33,7 @@
 	padding: 0.5vw 1vh;
 	margin: 0.26vw;
 	left: 0.2vw;
+	line-height: 2vh;
 }
 
      
@@ -49,7 +51,7 @@
 }
 
 #server_details {
-    display: inline-block;
+    display: inline-flex;
     position: fixed;
     border: 2px solid black;
     white-space: nowrap;
@@ -63,10 +65,10 @@
 
 .server_class  {
     display: inline-block;
-    margin-left: 2vh;
+    border: 1px solid white;
+    margin-left: 2.5vw;
     position: relative;
-    top: -10.8vh;
-    left: -3vw;
+    left: -0.5vw;
     
 }
 
@@ -78,16 +80,17 @@
     width: 18vw;
     height: 1.8vh;
     background: #6D8DA5;
+    line-height: 2vh;
     
 }
 
 
 .server_counters_list  {
     position: relative;
-    top: -0.3vh;
+    top: 0.5vh;
     width: 17vw;
     white-space:normal;
-    font: 1.565vh/1.565vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 1.465vh/1.465vw "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: center;
     padding: 0.5vh;
    
@@ -111,8 +114,9 @@ hr {
 .monitor_group  {
     display: inline-block;
     position: relative;
+    border: 1px solild white;
     top: 4vh;
-    left: -2vw;
+    left: -1.5vw;
     width: 21vw;
     white-space: nowrap;
     font: 1.465vh/1.465vw "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -121,7 +125,7 @@ hr {
 
 .counters_list_css  {
     list-style-type: none;
-    border: 1px solid green;
+    border: 1px solid white;
     padding: 1.6%;
     line-height: 4vh;
     
