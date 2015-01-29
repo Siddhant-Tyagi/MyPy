@@ -12,7 +12,6 @@
 		
 		//$("#server_details").prepend("<div style='width: 10vw;'></div>");
 		//setting the default monitor group to general_info for landing page
-		checked_server_list = [];
 		current_monitor = "general_info";
 		var general_info_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
@@ -22,8 +21,6 @@
 			                                            "<li class='counters_list_css'>Start time</li>" +
 			                                            "<li class='counters_list_css'>Default storage engine</li>" +
 			                                            "<li class='counters_list_css'>InnoDB version</li>" +
-			                                            "<li class='counters_list_css'>Performance schema</li>" +
-			                                            "<li class='counters_list_css'>Uptime since FLUSH STATUS</li>" +
 			                                        "</ul>" +
 			                                    "</div>";
 		$("#server_details").prepend(general_info_counters);
@@ -43,8 +40,6 @@
 			                                            "<li class='counters_list_css'>Start time</li>" +
 			                                            "<li class='counters_list_css'>Default storage engine</li>" +
 			                                            "<li class='counters_list_css'>InnoDB version</li>" +
-			                                            "<li class='counters_list_css'>Performance schema</li>" +
-			                                            "<li class='counters_list_css'>Uptime since FLUSH STATUS</li>" +
 			                                        "</ul>" +
 			                                    "</div>";
 		            $("#server_details").prepend(general_info_counters);
@@ -76,18 +71,13 @@
 			var $this = $(this);
 			if($this.is(':checked')){
 				var server_selection = $this.val();
-				checked_server_list.push(server_selection);
-				//alert(checked_server_list);
 				$.post('/mypy/', {server_details_display_list: server_selection, 
 					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(json_response){
 					    response_dict = JSON.parse(json_response);
-					    var number_of_counters = parseInt($(".monitor_group li").length));
-					    /*for(i=0; i<number_of_counters; i++) {
-					          var list = "<li class='counters_list-css'>" + eval('response_dict.' + current_monitor +  */ 
 					    var html_response = "<div class='server_class' id='" + $this.val() + "'>" +
 						                        "<div class='server_heading'>" + response_dict.general_info.server_name + "</div>" + 
 						                            "<ul class='server_counters_list'>" +
-						                                "<li class='counters_list_css'>" + eval('response_dict.' + current_monitor + '.available') + "</li>" +
+						                                "<li class='counters_list_css'>" + response_dict.general_info.available + "</li>" +
 						                                "<li class='counters_list_css'>" + response_dict.general_info.version + "</li>" +
 						                                "<li class='counters_list_css'>" + "test" + "</li>" +
 						                            "</ul>" +
@@ -96,14 +86,10 @@
 						})
 					}
 			else{
-				var index = checked_server_list.indexOf($this.val());
-				if(index > -1) {
-					checked_server_list.splice(index, 1);
-				}
 				$("#" + $this.val()).remove();
-				//alert(checked_server_list);
 			}
 				});
+			
 		});
 		
 </script>
