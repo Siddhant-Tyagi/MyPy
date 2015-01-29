@@ -15,12 +15,12 @@
 		current_monitor = "general_info";
 		var general_info_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li class='counters_list_css'>Available?</li>" +
-			                                            "<li class='counters_list_css'>Version</li>" +
-			                                            "<li class='counters_list_css'>Running for</li>" +
-			                                            "<li class='counters_list_css'>Start time</li>" +
-			                                            "<li class='counters_list_css'>Default storage engine</li>" +
-			                                            "<li class='counters_list_css'>InnoDB version</li>" +
+			                                            "<li class='counters_list_css' id='available'>Available?</li>" +
+			                                            "<li class='counters_list_css' id='version'>Version</li>" +
+			                                            "<li class='counters_list_css' id='running_for'>Running for</li>" +
+			                                            "<li class='counters_list_css' id='start_time'>Start time</li>" +
+			                                            "<li class='counters_list_css' id='default_storage_engine'>Default storage engine</li>" +
+			                                            "<li class='counters_list_css' id='innodb_version'>InnoDB version</li>" +
 			                                        "</ul>" +
 			                                    "</div>";
 		$("#server_details").prepend(general_info_counters);
@@ -34,12 +34,12 @@
 			        $(".monitor_group").remove();
 			        var general_info_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li class='counters_list_css'>Available?</li>" +
-			                                            "<li class='counters_list_css'>Version</li>" +
-			                                            "<li class='counters_list_css'>Running for</li>" +
-			                                            "<li class='counters_list_css'>Start time</li>" +
-			                                            "<li class='counters_list_css'>Default storage engine</li>" +
-			                                            "<li class='counters_list_css'>InnoDB version</li>" +
+			                                            "<li class='counters_list_css' id='available'>Available?</li>" +
+			                                            "<li class='counters_list_css' id='version'>Version</li>" +
+			                                            "<li class='counters_list_css' id='running_for'>Running for</li>" +
+			                                            "<li class='counters_list_css' id='start_time'>Start time</li>" +
+			                                            "<li class='counters_list_css' id='default_storage_engine'>Default storage engine</li>" +
+			                                            "<li class='counters_list_css' id='innodb_version'>InnoDB version</li>" +
 			                                        "</ul>" +
 			                                    "</div>";
 		            $("#server_details").prepend(general_info_counters);
@@ -49,12 +49,12 @@
 		            $(".monitor_group").remove();
 		            var connection_history_counters = "<div class='monitor_group'>" +
 			                                              "<ul>" +
-			                                                  "<li class='counters_list_css'>Attempts</li>" +
-			                                                  "<li class='counters_list_css'>Successful</li>" +
-			                                                  "<li class='counters_list_css'>Percentage of max allowed reached</li>" +
-			                                                  "<li class='counters_list_css'>Refused</li>" +
-			                                                  "<li class='counters_list_css'>Percentage of refused connections</li>" +
-			                                                  "<li class='counters_list_css'>Terminated abruptly</li>" +
+			                                                  "<li class='counters_list_css' id='attempts'>Attempts</li>" +
+			                                                  "<li class='counters_list_css' id='successful'>Successful</li>" +
+			                                                  "<li class='counters_list_css' id='percentage_of_max_allowed_reached'>Percentage of max allowed reached</li>" +
+			                                                  "<li class='counters_list_css' id='refused'>Refused</li>" +
+			                                                  "<li class='counters_list_css' id='percentage_of_refused_connections'>Percentage of refused connections</li>" +
+			                                                  "<li class='counters_list_css' id='terminated_abruptly'>Terminated abruptly</li>" +
 			                                              "</ul>" +
 			                                          "</div>";
 			        $("#server_details").prepend(connection_history_counters);
@@ -65,26 +65,38 @@
         
 		//this selector describes which servers are being currently selected
 		//more than one server can be selected at a time
-		//it sends a post request to the index view and returns the json data
+		//it sends a ajax post request to the index view and returns the json data
 		$("#server_list_form :checkbox").change(function(){
-			//alert(current_monitor);
 			var $this = $(this);
+			//checking is the server checkbox is checked and appending the serever details
 			if($this.is(':checked')){
 				var server_selection = $this.val();
 				$.post('/mypy/', {server_details_display_list: server_selection, 
 					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(json_response){
-					    response_dict = JSON.parse(json_response);
+					    var response_dict = JSON.parse(json_response);
+					    var total_counters = parseInt($(".monitor_group li").length);
+					    //alert(total_counters);
+					    var i;
+					    var counters_list = "";
+					    
+					    /*creating the counters list from the json response_dict for the server to be appeneded*/
+					    for(i=0; i<total_counters; i++) {
+							counters_list += "<li class='counters_list_css'>" + 
+							                 eval('response_dict.' + current_monitor + "." + 
+							                 $(".monitor_group li:eq(" + i + ")").attr('id')) + "</li>";
+							}
+						
+						/*building the html_response to be appeneded*/						
 					    var html_response = "<div class='server_class' id='" + $this.val() + "'>" +
-						                        "<div class='server_heading'>" + response_dict.general_info.server_name + "</div>" + 
+						                        "<div class='server_heading'>" + response_dict.server_name + "</div>" + 
 						                            "<ul class='server_counters_list'>" +
-						                                "<li class='counters_list_css'>" + response_dict.general_info.available + "</li>" +
-						                                "<li class='counters_list_css'>" + response_dict.general_info.version + "</li>" +
-						                                "<li class='counters_list_css'>" + "test" + "</li>" +
+						                                counters_list +
 						                            "</ul>" +
-						                     "</div>"    
+						                     "</div>";    
 						$(".monitor_group").after(html_response);
 						})
 					}
+			//if the server checkbox is unchecked 		
 			else{
 				$("#" + $this.val()).remove();
 			}

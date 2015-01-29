@@ -64,8 +64,9 @@ def index(request):
             #builds the dictionary data type to be passed as json response
             #this dict contains the various MySQL counters
             json_data = {
+                          'server_name': server_name,
+
                           'general_info': {
-                                         'server_name': server_name,
                                          'available': 'yes yes', 
                                          'version': '5.6.14',
                                          },
