@@ -116,6 +116,7 @@ hr {
 .monitor_group  {
     display: inline-block;
     position: relative;
+    flex: none;
     height: 15vh;
     border: 1px solild white;
     top: 4vh;

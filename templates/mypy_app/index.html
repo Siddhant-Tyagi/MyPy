@@ -9,8 +9,10 @@
 <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
 <script>
      $(document).ready(function(){
-		
-		//$("#server_details").prepend("<div style='width: 10vw;'></div>");
+		/*initializing js object of all the selected servers,
+		  later to be used to maintain the couters object for each server*/
+		 
+		selected_servers_object = {};
 		//setting the default monitor group to general_info for landing page
 		current_monitor = "general_info";
 		var general_info_counters = "<div class='monitor_group'>" +
@@ -43,6 +45,7 @@
 			                                        "</ul>" +
 			                                    "</div>";
 		            $("#server_details").prepend(general_info_counters);
+		            insert_data();
 		            break;
 		        
 		        case "connection_history":
@@ -58,11 +61,29 @@
 			                                              "</ul>" +
 			                                          "</div>";
 			        $("#server_details").prepend(connection_history_counters);
+			        insert_data();
 			        break;
          }
 		});
          
         
+        function insert_data() {
+			//var s1 = JSON.parse(selected_servers_object);
+			//alert(selected_servers_object.ger_server.general_info['version']);
+			var total_counters = parseInt($(".monitor_group li").length);
+			//alert(total_counters);
+			for(var server_name in selected_servers_object) {
+				var index = 0;
+				for(index=0; index<total_counters; index++) {
+					//alert("inside nest" + index);
+					var current_list_element = $(".monitor_group li:eq(" + index + ")");
+					var current_counter_value = eval("selected_servers_object[server_name]." + current_monitor + "['" + 
+					                                  current_list_element.attr('id') + "']");
+					//alert(current_counter_value);
+					$("#" + server_name + " li:eq(" + index + ")").text(current_counter_value);
+				}
+			}
+		}
 		//this selector describes which servers are being currently selected
 		//more than one server can be selected at a time
 		//it sends a ajax post request to the index view and returns the json data
@@ -70,15 +91,17 @@
 			var $this = $(this);
 			//checking is the server checkbox is checked and appending the serever details
 			if($this.is(':checked')){
-				var server_selection = $this.val();
+				var server_selection = $this.val();				
 				$.post('/mypy/', {server_details_display_list: server_selection, 
 					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(json_response){
 					    var response_dict = JSON.parse(json_response);
-					    var total_counters = parseInt($(".monitor_group li").length);
-					    //alert(total_counters);
+					    
+					    //updating js object of all the current checked server with its respective counter
+					    selected_servers_object[$this.val()] = response_dict;
+					    
+					    var total_counters = parseInt($(".monitor_group li").length);					
 					    var i;
 					    var counters_list = "";
-					    
 					    /*creating the counters list from the json response_dict for the server to be appeneded*/
 					    for(i=0; i<total_counters; i++) {
 							counters_list += "<li class='counters_list_css'>" + 
@@ -94,11 +117,15 @@
 						                            "</ul>" +
 						                     "</div>";    
 						$(".monitor_group").after(html_response);
-						})
+						//alert(JSON.stringify(selected_servers_object));
+						});
 					}
-			//if the server checkbox is unchecked 		
+			
 			else{
+				//removing the current server and its couters object from the selected_servers object
+				delete selected_servers_object[$this.val()];
 				$("#" + $this.val()).remove();
+				//alert(JSON.stringify(selected_servers_object));
 			}
 				});
 			
