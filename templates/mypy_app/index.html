@@ -10,11 +10,11 @@
 <script>
      $(document).ready(function(){
 		/*initializing js object of all the selected servers,
-		  later to be used to maintain the couters object for each server*/
-		 
+		  later to be used to maintain the couters object for each server*/		 
 		selected_servers_object = {};
 		//setting the default monitor group to general_info for landing page
 		current_monitor = "general_info";
+		//$("#" + current_monitor).attr('disabled', 'disabled'); 
 		var general_info_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
 			                                            "<li class='counters_list_css' id='available'>Available?</li>" +
@@ -29,6 +29,9 @@
 		//this selector describes which monitor has been selected currently
 	    //only one monitor group can be selected at one time 
 		$("input.tab").click(function(){
+			if(current_monitor==$(this).attr("id")) {
+				return false;
+			}
 			current_monitor = $(this).attr("id");
 			//alert(current_monitor);
 			switch(current_monitor){
@@ -75,7 +78,7 @@
 			for(var server_name in selected_servers_object) {
 				var index = 0;
 				for(index=0; index<total_counters; index++) {
-					//alert("inside nest" + index);
+					//alert("inside nest");
 					var current_list_element = $(".monitor_group li:eq(" + index + ")");
 					var current_counter_value = eval("selected_servers_object[server_name]." + current_monitor + "['" + 
 					                                  current_list_element.attr('id') + "']");

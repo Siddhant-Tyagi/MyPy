@@ -16,9 +16,10 @@ def adding_server(request):
         if form.is_valid():
             #saving the server details in sqlite db
             form.save(commit=True)
-            #current_object contains the last entry from the sqlite db
+            #current_object contains the last entry from the sqlite db which is the current server object
             current_object = add_server.objects.all()[len(add_server.objects.all())-1]
             #calling the connect_to_server method from mypy_mysqldb
+            #takes in the current server object as a parameter
             #attempts to connect to the MySQL server and returns the response message
             adding_server_msg = connect_to_server(current_object)
             #if the connection to MySQL server fails, delete this entry from the sqlite db
@@ -61,6 +62,9 @@ def index(request):
         if request.is_ajax():
             #returns the server name selected one at a time from the list of checkbox
             server_name = request.POST.get("server_details_display_list")
+            current_server_obj = add_server.objects.filter(mysql_server_name=server_name)[0]
+            #print current_server_obj
+            global_var_dict = get_mysql_data(current_server_obj)
             #builds the dictionary data type to be passed as json response
             #this dict contains the various MySQL counters
             json_data = {
@@ -68,7 +72,11 @@ def index(request):
 
                           'general_info': {
                                            'available': 'yes yes', 
-                                           'version': '5.6.14',
+                                           'version': global_var_dict['version'],
+                                           'running_for': '5 hours',
+                                           'start_time': '11 PM',
+                                           'default_storage_engine': 'InnoDB',
+                                           'innodb_version': '5.6',
                                          },
 
                           'connection_history': {
