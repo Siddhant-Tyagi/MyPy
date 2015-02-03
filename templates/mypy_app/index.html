@@ -12,6 +12,7 @@
 		/*initializing js object of all the selected servers,
 		  later to be used to maintain the couters object for each server*/		 
 		selected_servers_object = {};
+		selected_servers_name_list = [];
 		//setting the default monitor group to general_info for landing page
 		current_monitor = "general_info";
 		//$("#" + current_monitor).attr('disabled', 'disabled'); 
@@ -94,9 +95,26 @@
 			var $this = $(this);
 			//checking is the server checkbox is checked and appending the serever details
 			if($this.is(':checked')){
-				var server_selection = $this.val();				
-				$.post('/mypy/', {server_details_display_list: server_selection, 
-					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(json_response){
+				var server_selection = $this.val();
+				
+				
+				selected_servers_name_list = [];
+				for(var server_name in selected_servers_object) {
+					//alert(server_name);
+					if(selected_servers_name_list.indexOf(server_name) == -1) {
+						selected_servers_name_list.push(server_name);
+					}
+				}
+				if(selected_servers_name_list.indexOf(server_selection) == -1) {
+						selected_servers_name_list.push(server_selection);
+				}
+				
+				alert(selected_servers_name_list);		
+				$.post('/mypy/', { server_details_display_list: server_selection,
+					               current_selected_servers: JSON.stringify(selected_servers_name_list), 
+					               csrfmiddlewaretoken: '{{ csrf_token }}',
+					              }, 
+					function(json_response){
 					    var response_dict = JSON.parse(json_response);
 					    
 					    //updating js object of all the current checked server with its respective counter

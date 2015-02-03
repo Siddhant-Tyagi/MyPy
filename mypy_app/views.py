@@ -62,6 +62,8 @@ def index(request):
         if request.is_ajax():
             #returns the server name selected one at a time from the list of checkbox
             server_name = request.POST.get("server_details_display_list")
+            currently_selected_servers = request.POST.get("currently_selected_servers")
+            print str(currently_selected_servers)
             current_server_obj = add_server.objects.filter(mysql_server_name=server_name)[0]
             #print current_server_obj
             global_var_dict = get_mysql_data(current_server_obj)
