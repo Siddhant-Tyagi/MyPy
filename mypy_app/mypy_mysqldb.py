@@ -28,7 +28,7 @@ def connect_to_server(connection_detail_object):
 def get_mysql_data(current_server_object):
     #print "inside get_mysql_data method"
     #print current_server_object
-    #print current_server_object.mysql_server_name
+    print current_server_object.mysql_server_name
     connection_msg = connect_to_server(current_server_object)
     #print "hello hello"
     if 'successful' in connection_msg:
