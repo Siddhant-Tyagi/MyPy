@@ -63,10 +63,12 @@ def index(request):
         #this will be used to return MySQL counter's data to the template
         if request.is_ajax():
             #get the selected checkbox values from jquery
-            selected_servers_list = request.POST.get("server_list_from_jquery")
-            selected_servers_list = json.loads(selected_servers_list)
+            s1 = request.POST.get("server_list_from_jquery")
+            #print type(s1)
+            selected_servers_list = json.loads(s1)
+            print selected_servers_list
             #check if the servers_object is not empty
-            if servers_object != {}:
+            if servers_object != {} and selected_servers_list != []:
                 #if its not empty then delete the key value pair from the python's servers
                 #object which are not in the present list of selected servers
                 for server in servers_object:
@@ -77,19 +79,32 @@ def index(request):
             if selected_servers_list != []:
                 #if not then updating the servers object with the relevant data
                 for server in selected_servers_list:
-                    if server not in server_object:
+                    print server
+                    if server not in servers_object:
+                        #print "inside if"
                         #calling the external function and updating the servers_object
                         #this condition is executed when new server checkbox is clicked
-                        current_server_obj = add_server.objects.filter(mysql_server_name=server_name)[0]
+                        current_server_obj = add_server.objects.filter(mysql_server_name=server)[0]
+                        print "current_server_obj" + str(current_server_obj)
                         global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
+                        #print global_var_dict
                         server_dict = build_server_details_dict(global_var_dict, global_status_dict)
-                        server_obj[server] = server_dict
+                        servers_object[server] = server_dict
+                        print servers_object
+                        return HttpResponse(json.dumps(servers_object)) 
 
                     else:
+                        print "inside else"
                         #this is executed when the servers checked list is same
                         #and updating the servers_object data after a given data collection interval
+                        current_server_obj = add_server.objects.filter(mysql_server_name=server)[0]
+                        print current_server_obj
+                        global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
+                        server_dict = build_server_details_dict(global_var_dict, global_status_dict)
+                        servers_object[server] = server_dict 
 
-            return HttpResponse("hello from views") 
+
+            return HttpResponse(json.dumps(servers_object)) 
 
             """#returns the server name selected one at a time from the list of checkbox
             server_name = request.POST.get("server_details_display_list")
@@ -154,3 +169,27 @@ def realtime(request):
     context = RequestContext(request)
     context_dict = {"test_var": "realtime page",}
     return render_to_response('mypy_app/realtime.html', context_dict, context)
+
+def build_server_details_dict(global_var_dict, global_status_dict):
+    #print global_var_dict['version']
+    counters_dict = {
+
+                     'general_info': {
+                                      'available': global_status_dict['Uptime'], 
+                                      'version': '5.6.14',
+                                      'running_for': '5 hours',
+                                      'start_time': '11 PM',
+                                      'default_storage_engine': 'InnoDB',
+                                      'innodb_version': '5.6',
+                                    },
+
+                     'connection_history': {
+                                            'attempts': '24',
+                                            'successful': '22',
+                                            'percentage_of_max_allowed_reached': '10',
+                                            'refused': '2',
+                                            'percentage_of_refused_connections': '5',
+                                            'terminated_abruptly': '0',
+                                           },
+                    }
+    return counters_dict

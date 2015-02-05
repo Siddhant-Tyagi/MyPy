@@ -12,29 +12,40 @@
 		/*initializing js object of all the selected servers,
 		later to be used to maintain the couters object for each server*/		 
 		selected_servers_object = {};
-		selected_servers_name_list = [];
-		
+		selected_servers_name_list = ['ger_server'];
 		
 		function x(){
-			    selected_servers_name_list = []
-			    //js array with the list of selected servers
-	 	        $("input[type=checkbox]:checked").each(function() {
+			selected_servers_name_list = []
+			//js array with the list of selected servers
+	 	    $("input[type=checkbox]:checked").each(function() {
 			        selected_servers_name_list.push($(this).val());
-		        });
-		        //alert(JSON.stringify(selected_servers_name_list));
-				$.post('/mypy/', { server_list_from_jquery: JSON.stringify(selected_servers_name_list),
-					               csrfmiddlewaretoken: '{{ csrf_token }}',
-					              }, 
-					function(response){
-						//alert(response);
-					});
-				loop();
-			}
+		    });
+		    //alert(JSON.stringify(selected_servers_name_list));
+			$.post('/mypy/', { server_list_from_jquery: JSON.stringify(selected_servers_name_list),
+					           csrfmiddlewaretoken: '{{ csrf_token }}',
+					          }, 
+					function(json_response){
+						selected_servers_object = {};
+						selected_servers_object = JSON.parse(json_response);
+						insert_data();
+			});
+			loop();
+		}
 		
 		function loop() {
 			setTimeout(x, 5000);
 		}
 		loop();
+
+		
+		function get_server_checklist() {
+			selected_servers_name_list = [];
+			$("input[type=checkbox]:checked").each(function() {
+			        selected_servers_name_list.push($(this).val());
+		        });
+		    return selected_servers_name_list;
+		}
+		
 		//setting the default monitor group to general_info for landing page
 		current_monitor = "general_info";
 		//$("#" + current_monitor).attr('disabled', 'disabled'); 
@@ -137,13 +148,14 @@
 				}*/
 				
 				//alert(selected_servers_name_list);		
-				$.post('/mypy/', { server_details_display_list: server_selection,
-					               current_selected_servers: JSON.stringify(selected_servers_name_list), 
+				$.post('/mypy/', { server_list_from_jquery: JSON.stringify(get_server_checklist()), 
 					               csrfmiddlewaretoken: '{{ csrf_token }}',
 					              }, 
 					function(json_response){
-					    var response_dict = JSON.parse(json_response);
-					    
+						//alert(JSON.stringify(get_server_checklist()));
+					    var counters_dict = JSON.parse(json_response);
+					    var response_dict = counters_dict[server_selection];
+					    //alert(response_dict[server_selection]);
 					    //updating js object of all the current checked server with its respective counter
 					    selected_servers_object[$this.val()] = response_dict;
 					    
@@ -159,7 +171,7 @@
 						
 						/*building the html_response to be appeneded*/						
 					    var html_response = "<div class='server_class' id='" + $this.val() + "'>" +
-						                        "<div class='server_heading'>" + response_dict.server_name + "</div>" + 
+						                        "<div class='server_heading'>" + server_selection + "</div>" + 
 						                            "<ul class='server_counters_list'>" +
 						                                counters_list +
 						                            "</ul>" +

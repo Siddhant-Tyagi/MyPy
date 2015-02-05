@@ -31,6 +31,7 @@ def get_mysql_data(current_server_object):
     #print current_server_object.mysql_server_name
     connection_msg = connect_to_server(current_server_object)
     #print "hello hello"
+    #print connection_msg
     if 'successful' in connection_msg:
         global connection_obj
         #print str(type(connection_obj))
