@@ -8,8 +8,6 @@ from mypy_app.forms import Add_Server_Form
 from mypy_mysqldb import *
 from sqlite_operations import *
 
-servers_object = {}
-
 def adding_server(request):
     context = RequestContext(request)
     if request.method == 'POST':
@@ -59,38 +57,12 @@ def index(request):
     context = RequestContext(request)
     #check if request method is POST
     if request.method == 'POST':
-        #check if request is ajax and return json response
+        #check if request is ajax and return jason response
         #this will be used to return MySQL counter's data to the template
         if request.is_ajax():
-            #get the selected checkbox values from jquery
-            selected_servers_list = request.POST.get("server_list_from_jquery")
-            selected_servers_list = json.loads(selected_servers_list)
-            #check if the servers_object is not empty
-            if servers_object != {}:
-                #if its not empty then delete the key value pair from the python's servers
-                #object which are not in the present list of selected servers
-                for server in servers_object:
-                    if server not in selected_servers_list:
-                        del servers_object[server]
-
-            #checking if the currently selected server's list is not empty
-            if selected_servers_list != []:
-                #if not then updating the servers object with the relevant data
-                for server in selected_servers_list:
-                    if server not in server_object:
-                        #calling the external function and updating the servers_object
-                        #this condition is executed when new server checkbox is clicked
-                        current_server_obj = add_server.objects.filter(mysql_server_name=server_name)[0]
-                        global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
-                        server_dict = build_server_details_dict(global_var_dict, global_status_dict)
-                        server_obj[server] = server_dict
-
-                    else:
-                        #this is executed when the servers checked list is same
-                        #and updating the servers_object data after a given data collection interval
-
+            selected_servers_list = request.POST.getlist("server_list_from_jquery[]")
+            print selected_servers_list
             return HttpResponse("hello from views") 
-
             """#returns the server name selected one at a time from the list of checkbox
             server_name = request.POST.get("server_details_display_list")
             current_server_obj = add_server.objects.filter(mysql_server_name=server_name)[0]

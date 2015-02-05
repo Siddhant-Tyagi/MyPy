@@ -8,10 +8,33 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
 <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
 <script>
-     $(document).ready(function(){
+       $(document).ready(function(){
 		/*initializing js object of all the selected servers,
-		  later to be used to maintain the couters object for each server*/		 
+		later to be used to maintain the couters object for each server*/		 
 		selected_servers_object = {};
+		selected_servers_name_list = [];
+		
+		
+		function x(){
+			    selected_servers_name_list = []
+			    //js array with the list of selected servers
+	 	        $("input[type=checkbox]:checked").each(function() {
+			        selected_servers_name_list.push($(this).val());
+		        });
+		        //alert(JSON.stringify(selected_servers_name_list));
+				$.post('/mypy/', { server_list_from_jquery: JSON.stringify(selected_servers_name_list),
+					               csrfmiddlewaretoken: '{{ csrf_token }}',
+					              }, 
+					function(response){
+						//alert(response);
+					});
+				loop();
+			}
+		
+		function loop() {
+			setTimeout(x, 5000);
+		}
+		loop();
 		//setting the default monitor group to general_info for landing page
 		current_monitor = "general_info";
 		//$("#" + current_monitor).attr('disabled', 'disabled'); 
@@ -92,11 +115,33 @@
 		//it sends a ajax post request to the index view and returns the json data
 		$("#server_list_form :checkbox").change(function(){
 			var $this = $(this);
+			//alert("inside checkbox");
 			//checking is the server checkbox is checked and appending the serever details
 			if($this.is(':checked')){
-				var server_selection = $this.val();				
-				$.post('/mypy/', {server_details_display_list: server_selection, 
-					csrfmiddlewaretoken: '{{ csrf_token }}'}, function(json_response){
+				var server_selection = $this.val();
+				//selected_servers_name_list = []
+				//$("input[type=checkbox]:checked").each(function() {
+					//selected_servers_name_list.push($(this).val());
+				//});
+				
+				//alert(selected_servers_name_list);
+				/*selected_servers_name_list = [];
+				for(var server_name in selected_servers_object) {
+					//alert(server_name);
+					if(selected_servers_name_list.indexOf(server_name) == -1) {
+						selected_servers_name_list.push(server_name);
+					}
+				}
+				if(selected_servers_name_list.indexOf(server_selection) == -1) {
+						selected_servers_name_list.push(server_selection);
+				}*/
+				
+				//alert(selected_servers_name_list);		
+				$.post('/mypy/', { server_details_display_list: server_selection,
+					               current_selected_servers: JSON.stringify(selected_servers_name_list), 
+					               csrfmiddlewaretoken: '{{ csrf_token }}',
+					              }, 
+					function(json_response){
 					    var response_dict = JSON.parse(json_response);
 					    
 					    //updating js object of all the current checked server with its respective counter
@@ -128,7 +173,7 @@
 				//removing the current server and its couters object from the selected_servers object
 				delete selected_servers_object[$this.val()];
 				$("#" + $this.val()).remove();
-				//alert(JSON.stringify(selected_servers_object));
+				//alert(selected_servers_name_list);
 			}
 				});
 			
@@ -163,7 +208,8 @@
         
         <input type="button" class="tab" value="Replication" id="replication" style="left: 88.2vw;" />
         
-        
+        {% csrf_token %}
+        <input type="hidden" name="ajax_test" method="post" />
         
         {% if server_list %}
     
@@ -173,7 +219,7 @@
 	                {% for server in server_list %}
 	                
 	                    <li class="side_list_padding">
-	                        <input type="checkbox" name="delete_server_checkbox" value="{{server.mysql_server_name}}"/>
+	                        <input type="checkbox" name="selected_server_checkbox" value="{{server.mysql_server_name}}"/>
 	                            {{ server.mysql_server_name }}
 	                    </li>
 	                {% endfor %}

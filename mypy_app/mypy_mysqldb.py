@@ -28,7 +28,7 @@ def connect_to_server(connection_detail_object):
 def get_mysql_data(current_server_object):
     #print "inside get_mysql_data method"
     #print current_server_object
-    print current_server_object.mysql_server_name
+    #print current_server_object.mysql_server_name
     connection_msg = connect_to_server(current_server_object)
     #print "hello hello"
     if 'successful' in connection_msg:
@@ -37,6 +37,8 @@ def get_mysql_data(current_server_object):
         cursor_obj = connection_obj.cursor()
         cursor_obj.execute("show global variables")
         global_variables = cursor_obj.fetchall()
+        cursor_obj.execute("show global status")
+        global_status = cursor_obj.fetchall()
         connection_obj.close()
-        return dict(global_variables)
-    return {}
+        return dict(global_variables), dict(global_status)
+    return {}, {}
