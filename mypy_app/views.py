@@ -7,6 +7,7 @@ from mypy_app.models import add_server
 from mypy_app.forms import Add_Server_Form
 from mypy_mysqldb import *
 from sqlite_operations import *
+from utility import *
 
 servers_object = {}
 
@@ -66,31 +67,40 @@ def index(request):
             s1 = request.POST.get("server_list_from_jquery")
             #print type(s1)
             selected_servers_list = json.loads(s1)
-            print selected_servers_list
-            #check if the servers_object is not empty
+            #print selected_servers_list
+            #check if there are servers in servers_object and selected_servers_list
             if servers_object != {} and selected_servers_list != []:
                 #if its not empty then delete the key value pair from the python's servers
                 #object which are not in the present list of selected servers
+                servers_to_be_deleted = []
                 for server in servers_object:
                     if server not in selected_servers_list:
-                        del servers_object[server]
+                        servers_to_be_deleted_list.append(server)
+                for server in servers_to_be_deleted:
+                    del servers_object[server]
 
             #checking if the currently selected server's list is not empty
             if selected_servers_list != []:
                 #if not then updating the servers object with the relevant data
                 for server in selected_servers_list:
-                    print server
+                    #print server
                     if server not in servers_object:
                         #print "inside if"
                         #calling the external function and updating the servers_object
                         #this condition is executed when new server checkbox is clicked
                         current_server_obj = add_server.objects.filter(mysql_server_name=server)[0]
-                        print "current_server_obj" + str(current_server_obj)
+                        print "current_server_obj " + str(current_server_obj)
                         global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
+                        if global_var_dict == {} and global_status_dict == {}:
+                            #print "global var dict is empty"
+                            server_dict = build_server_details_dict(global_var_dict, global_status_dict)
+                            #print server_dict
+                            servers_object[server] = server_dict
+                            return HttpResponse(json.dumps(servers_object))
                         #print global_var_dict
                         server_dict = build_server_details_dict(global_var_dict, global_status_dict)
                         servers_object[server] = server_dict
-                        print servers_object
+                        #print servers_object
                         return HttpResponse(json.dumps(servers_object)) 
 
                     else:
@@ -98,7 +108,7 @@ def index(request):
                         #this is executed when the servers checked list is same
                         #and updating the servers_object data after a given data collection interval
                         current_server_obj = add_server.objects.filter(mysql_server_name=server)[0]
-                        print current_server_obj
+                        #print current_server_obj
                         global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
                         server_dict = build_server_details_dict(global_var_dict, global_status_dict)
                         servers_object[server] = server_dict 
@@ -171,8 +181,23 @@ def realtime(request):
     return render_to_response('mypy_app/realtime.html', context_dict, context)
 
 def build_server_details_dict(global_var_dict, global_status_dict):
-    #print global_var_dict['version']
-    counters_dict = {
+    from counters_structure import counters_dict
+    #print counters_dict
+    if global_var_dict == {}:
+        return counters_dict
+
+    #resolving general info counters
+
+    #calulating running for period
+    running_for = covert_time(int(global_status_dict['Uptime']))
+
+
+    general_info = counters_structure['general_info']
+    general_info['available'] = "Yes"
+    general_info['version'] = global_var_dict['version']
+    general_info['running_for'] = 
+    #counters = resolve_counters(global_var_dict, global_status_dict)
+    """counters_dict = {
 
                      'general_info': {
                                       'available': global_status_dict['Uptime'], 
@@ -192,4 +217,15 @@ def build_server_details_dict(global_var_dict, global_status_dict):
                                             'terminated_abruptly': '0',
                                            },
                     }
+    #print "counters dict:  " + str(counters_dict)"""
     return counters_dict
+
+def resolve_counters(global_var_dict, global_status_dict):
+    resolved_counters_dict = {
+                               'general_info': {},
+                               'connection_history': {},
+                             }
+    
+    #resolving general info counters
+
+
