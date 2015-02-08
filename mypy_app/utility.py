@@ -12,6 +12,6 @@ def convert_time(time_in_seconds):
     for time_unit in time_list:
         for unit in time_unit:
             if time_unit[unit] != 0:
-                time = str(time_unit[unit]) + " " + unit + " " + time
+                time = str(time_unit[unit]) + unit + " " + time
     return time
     

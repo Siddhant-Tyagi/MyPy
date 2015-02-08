@@ -14,14 +14,23 @@
 		selected_servers_object = {};
 		selected_servers_name_list = ['ger_server'];
 		
-		function x(){
-			selected_servers_name_list = []
+		/*$("#delete_server").click(function() {
+			$.post('/mypy/', {server_list_from_jquery: JSON.stringify(get_server_checklist()),
+				              csrfmiddlewaretoken: '{{ csrf_token }}',
+				             },
+				    function() {
+						alert("deleted serevr");
+					}
+			);
+		});*/
+		
+		//send to the views, the list of selected servers
+		//returns the updated json response of the server counters
+		function update_server_obj(){
+			//selected_servers_name_list = []
 			//js array with the list of selected servers
-	 	    $("input[type=checkbox]:checked").each(function() {
-			        selected_servers_name_list.push($(this).val());
-		    });
-		    //alert(JSON.stringify(selected_servers_name_list));
-			$.post('/mypy/', { server_list_from_jquery: JSON.stringify(selected_servers_name_list),
+	 	    //alert(JSON.stringify(selected_servers_name_list));
+			$.post('/mypy/', { server_list_from_jquery: JSON.stringify(get_server_checklist()),
 					           csrfmiddlewaretoken: '{{ csrf_token }}',
 					          }, 
 					function(json_response){
@@ -29,13 +38,13 @@
 						selected_servers_object = JSON.parse(json_response);
 						insert_data();
 			});
-			loop();
+			data_collection_loop();
 		}
 		
-		function loop() {
-			setTimeout(x, 5000);
+		function data_collection_loop() {
+			setTimeout(update_server_obj, 12000);
 		}
-		loop();
+		data_collection_loop();
 
 		
 		function get_server_checklist() {
@@ -54,9 +63,10 @@
 			                                            "<li class='counters_list_css' id='available'>Available?</li>" +
 			                                            "<li class='counters_list_css' id='version'>Version</li>" +
 			                                            "<li class='counters_list_css' id='running_for'>Running for</li>" +
-			                                            "<li class='counters_list_css' id='start_time'>Start time</li>" +
 			                                            "<li class='counters_list_css' id='default_storage_engine'>Default storage engine</li>" +
 			                                            "<li class='counters_list_css' id='innodb_version'>InnoDB version</li>" +
+			                                            "<li class='counters_list_css' id='performance_schema'>Performance schema</li>" +
+			                                            "<li class='counters_list_css' id='uptime_since_flush_status'>Uptime since FLUSH STATUS</li>" +
 			                                        "</ul>" +
 			                                    "</div>";
 		$("#server_details").prepend(general_info_counters);
@@ -76,9 +86,10 @@
 			                                            "<li class='counters_list_css' id='available'>Available?</li>" +
 			                                            "<li class='counters_list_css' id='version'>Version</li>" +
 			                                            "<li class='counters_list_css' id='running_for'>Running for</li>" +
-			                                            "<li class='counters_list_css' id='start_time'>Start time</li>" +
 			                                            "<li class='counters_list_css' id='default_storage_engine'>Default storage engine</li>" +
 			                                            "<li class='counters_list_css' id='innodb_version'>InnoDB version</li>" +
+			                                            "<li class='counters_list_css' id='performance_schema'>Performance schema</li>" +
+			                                            "<li class='counters_list_css' id='uptime_since_flush_status'>Uptime since FLUSH STATUS</li>" +
 			                                        "</ul>" +
 			                                    "</div>";
 		            $("#server_details").prepend(general_info_counters);
@@ -103,21 +114,57 @@
          }
 		});
          
+        //function for escaping server_name of white spaces, to be used as id
+        function escape_server_name(server_name) {
+			var escaped_server_name = "";
+			for(index=0; index<server_name.length; index++) {
+				if(server_name[index] == ' ') {
+					escaped_server_name += '\\ ';
+				}
+				else {
+					escaped_server_name += server_name[index];
+				}
+					
+			}
+			return escaped_server_name;
+		} 
+        
+        
         
         function insert_data() {
 			//var s1 = JSON.parse(selected_servers_object);
 			//alert(selected_servers_object.ger_server.general_info['version']);
 			var total_counters = parseInt($(".monitor_group li").length);
-			//alert(total_counters);
+			
 			for(var server_name in selected_servers_object) {
 				var index = 0;
+				var diff = 0;
+				
+			    //escaping the server_name of the sapces, to be used as the id 
+				var escaped_server_name = escape_server_name(server_name);
+				//alert(escaped_server_name);
+				if(total_counters < parseInt($("#" + escaped_server_name + " li").length)) {
+					//alert("inside");
+					//diff = total_counters - parseInt($("#" + server_name + " li").length);
+					for(var index=total_counters; index<parseInt($("#" + escaped_server_name + " li").length); index++) {
+						$("#" + escaped_server_name + " li:eq(" + index + ")").remove();
+					}
+						
+				}
+				
+				if(total_counters > parseInt($("#" + escaped_server_name + " li").length)) {
+					//alert("inside second");
+					for(var index=parseInt($("#" + escaped_server_name + " li").length); index<total_counters; index++) {
+						$("#" + escaped_server_name + " ul").append("<li class='counters_list_css'></li>");
+					}
+				}
 				for(index=0; index<total_counters; index++) {
 					//alert("inside nest");
 					var current_list_element = $(".monitor_group li:eq(" + index + ")");
 					var current_counter_value = eval("selected_servers_object[server_name]." + current_monitor + "['" + 
 					                                  current_list_element.attr('id') + "']");
 					//alert(current_counter_value);
-					$("#" + server_name + " li:eq(" + index + ")").text(current_counter_value);
+					$("#" + escaped_server_name + " li:eq(" + index + ")").text(current_counter_value);
 				}
 			}
 		}
@@ -169,7 +216,8 @@
 							                 $(".monitor_group li:eq(" + i + ")").attr('id')) + "</li>";
 							}
 						
-						/*building the html_response to be appeneded*/						
+						/*building the html_response to be appeneded*/
+						//alert($this.val());						
 					    var html_response = "<div class='server_class' id='" + $this.val() + "'>" +
 						                        "<div class='server_heading'>" + server_selection + "</div>" + 
 						                            "<ul class='server_counters_list'>" +
@@ -179,17 +227,18 @@
 						$(".monitor_group").after(html_response);
 						//alert(JSON.stringify(selected_servers_object));
 						});
-					}
+			}
 			
 			else{
 				//removing the current server and its couters object from the selected_servers object
 				delete selected_servers_object[$this.val()];
-				$("#" + $this.val()).remove();
+				var escaped_server_name = escape_server_name($this.val());
+				$("#" + escaped_server_name).remove();
 				//alert(selected_servers_name_list);
 			}
-				});
-			
 		});
+			
+	});
 		
 </script>
 <h1>MyPy</h1>
@@ -240,7 +289,7 @@
 	            <br>
 	            <span>
 	                <input type="submit" value="Delete" class="btn" name="delete_server" 
-	                style="width: 5.5vw; left: 10.7vw;">
+	                style="width: 5.5vw; left: 10.7vw;" id="delete_server">
 	                
 	        </form>
 	        <!--Add server will call the adding_server view-->

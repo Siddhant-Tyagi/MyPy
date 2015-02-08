@@ -4,9 +4,10 @@ counters_dict = {
                                       'available': 'No',       
                                       'version': 'n/a',
                                       'running_for': 'n/a',
-                                      'start_time': 'n/a',
                                       'default_storage_engine': 'n/a',
                                       'innodb_version': 'n/a',
+                                      'performance_schema': 'n/a',
+                                      'uptime_since_flush_status': 'n/a', 
                                     },
 
                      'connection_history': {
@@ -18,3 +19,4 @@ counters_dict = {
                                             'terminated_abruptly': 'n/a',
                                            },
                     }
+
