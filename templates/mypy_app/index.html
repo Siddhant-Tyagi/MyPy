@@ -12,7 +12,7 @@
 		/*initializing js object of all the selected servers,
 		later to be used to maintain the couters object for each server*/		 
 		selected_servers_object = {};
-		selected_servers_name_list = ['ger_server'];
+		selected_servers_name_list = [];
 		
 		/*$("#delete_server").click(function() {
 			$.post('/mypy/', {server_list_from_jquery: JSON.stringify(get_server_checklist()),
@@ -44,6 +44,7 @@
 		function data_collection_loop() {
 			setTimeout(update_server_obj, 12000);
 		}
+		
 		data_collection_loop();
 
 		
@@ -195,7 +196,8 @@
 				}*/
 				
 				//alert(selected_servers_name_list);		
-				$.post('/mypy/', { server_list_from_jquery: JSON.stringify(get_server_checklist()), 
+				$.post('/mypy/', { //this data is passed to the views in django
+					               single_selected_server: $this.val(), 
 					               csrfmiddlewaretoken: '{{ csrf_token }}',
 					              }, 
 					function(json_response){

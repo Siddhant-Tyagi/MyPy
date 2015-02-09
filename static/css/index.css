@@ -66,9 +66,10 @@
 
 .server_class  {
     display: inline-block;
+    position: relative;
+    flex: none;
     border: 1px solid white;
     margin-left: 2.5vw;
-    position: relative;
     left: -0.5vw;
     
 }

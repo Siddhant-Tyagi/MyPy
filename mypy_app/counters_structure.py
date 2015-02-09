@@ -1,4 +1,6 @@
-counters_dict = {
+class groups:
+    def __init__(self):
+        self.counters_dict = {
 
                      'general_info': {
                                       'available': 'No',       
@@ -19,4 +21,3 @@ counters_dict = {
                                             'terminated_abruptly': 'n/a',
                                            },
                     }
-

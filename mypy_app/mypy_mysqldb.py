@@ -1,6 +1,6 @@
 import MySQLdb as my
 
-connection_obj = my.connect
+#connection_obj = my.connect
 
 def connect_to_server(connection_detail_object):
     """This connection_detail_object has the following attributes 
@@ -11,7 +11,7 @@ def connect_to_server(connection_detail_object):
     mysql_user,
     mysql_password """
     
-    global connection_obj
+    #global connection_obj
     #print str(connection_detail_object)
     try:
         connection_obj = my.connect(
@@ -21,19 +21,22 @@ def connect_to_server(connection_detail_object):
                    passwd = str(connection_detail_object.mysql_password)
                 )
     except my.Error as connection_error:
-        return(str(connection_error.args[0]) + " " + str(connection_error.args[1]))
+        #print "coudnt connect"
+        return (str(connection_error.args[0]) + " " + str(connection_error.args[1])), None
 
-    return("Connection to " + connection_detail_object.mysql_server_name +  " successful.!!")
+    return ("Connection to " + connection_detail_object.mysql_server_name +  " successful.!!"), connection_obj
+
 
 def get_mysql_data(current_server_object):
+    #global connection_obj
     #print "inside get_mysql_data method"
     #print current_server_object
-    #print current_server_object.mysql_server_name
-    connection_msg = connect_to_server(current_server_object)
+    #print str(current_server_object.mysql_server_name) + "  " + str(current_server_object.mysql_host)
+    connection_msg, connection_obj = connect_to_server(current_server_object)
     #print "hello hello"
     #print connection_msg
-    if 'successful' in connection_msg:
-        global connection_obj
+    if connection_obj:
+        #print "connection_obj is not null"
         #print str(type(connection_obj))
         cursor_obj = connection_obj.cursor()
         cursor_obj.execute("show global variables")

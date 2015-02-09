@@ -8,7 +8,7 @@ from mypy_app.forms import Add_Server_Form
 from mypy_mysqldb import *
 from sqlite_operations import *
 from utility import *
-
+from counters_structure import groups
 
 def adding_server(request):
     context = RequestContext(request)
@@ -23,7 +23,9 @@ def adding_server(request):
             #calling the connect_to_server method from mypy_mysqldb
             #takes in the current server object as a parameter
             #attempts to connect to the MySQL server and returns the response message
-            adding_server_msg = connect_to_server(current_object)
+            adding_server_msg, connection_obj = connect_to_server(current_object)
+            if connection_obj:
+                connection_obj.close()
             #if the connection to MySQL server fails, delete this entry from the sqlite db
             if "successful" not in adding_server_msg:
                 current_object.delete()
@@ -54,16 +56,40 @@ def adding_server(request):
     return render_to_response('mypy_app/add_server.html', context_dict , context)
 
 
-servers_object = {}
+#servers_object = {}
 
 def index(request):
+    servers_object = {}
     context = RequestContext(request)
     #check if request method is POST
     if request.method == 'POST':
         #check if request is ajax and return json response
         #this will be used to return MySQL counter's data to the template
         if request.is_ajax():
-            #get the selected checkbox values from jquery
+            if request.POST.get("single_selected_server"):
+                server_name = request.POST.get("single_selected_server")
+                current_server_obj = add_server.objects.filter(mysql_server_name=server_name)[0]
+                #print "current_server_obj " + str(current_server_obj)
+                global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
+                server_dict = build_server_details_dict(global_var_dict, global_status_dict)
+                servers_object[server_name] = server_dict
+                return HttpResponse(json.dumps(servers_object))
+
+            else:
+                server_list = add_server.objects.all()
+                #print server_list
+                for current_server_obj in server_list:
+                    #print str(current_server_obj.mysql_server_name) + "  " + str(current_server_obj.mysql_host)
+                    global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
+                    #if global_var_dict == {}:
+                        #print current_server_obj.mysql_host
+                    server_dict = build_server_details_dict(global_var_dict, global_status_dict)
+                    #print server_dict['general_info']['available']
+                    servers_object[current_server_obj.mysql_server_name] = server_dict
+
+                return HttpResponse(json.dumps(servers_object))
+
+            """#get the selected checkbox values from jquery
             s1 = request.POST.get("server_list_from_jquery")
             #print type(s1)
             selected_servers_list = json.loads(s1)
@@ -144,8 +170,8 @@ def index(request):
                 
                 #print servers_object['production_server']['general_info']['running_for']
                 #print servers_object['Metabox MySQL server']['general_info']['running_for']
-                #print "outside loop  " + str(hex(id(servers_object)))
-                return HttpResponse(json.dumps(servers_object)) 
+                #print "outside loop  " + str(hex(id(servers_object)))"""
+                #return HttpResponse(json.dumps(servers_object)) 
 
         
         if request.POST['delete_server'] == 'Delete':
@@ -186,14 +212,22 @@ def realtime(request):
 
 def build_server_details_dict(global_var_dict, global_status_dict):
     #print "inside func"
-    from counters_structure import counters_dict
     #print "inside build server details"
+    counter_object = groups()
+    counters_dict = counter_object.counters_dict
     if global_var_dict == {}:
-        #print "inside if. no no no"
+        #from counters_structure import counters_dict
+        #print "inside if. yes yes yes"
+        for group in counters_dict:
+            for counter in group:
+                counters_dict[group][counter] = 'n/a'
+        counters_dict['general_info']['available'] = 'No'
         return counters_dict
+    
     
     #resolving general info counters
     #print global_status_dict['Uptime']
+    #from counters_structure import counters_dict
     general_info = counters_dict['general_info']
     #print str(counters_structure)
     general_info['available'] = "Yes"
