@@ -226,10 +226,8 @@ def build_server_details_dict(global_var_dict, global_status_dict):
     
     
     #resolving general info counters
-    #print global_status_dict['Uptime']
-    #from counters_structure import counters_dict
     general_info = counters_dict['general_info']
-    #print str(counters_structure)
+
     general_info['available'] = "Yes"
     general_info['version'] = global_var_dict['version']
     general_info['running_for'] = convert_time(int(global_status_dict['Uptime']))
@@ -237,6 +235,17 @@ def build_server_details_dict(global_var_dict, global_status_dict):
     general_info['innodb_version'] = global_var_dict['innodb_version']
     general_info['performance_schema'] = global_var_dict['performance_schema']
     general_info['uptime_since_flush_status'] = convert_time(int(global_status_dict['Uptime_since_flush_status']))
+    
+    
+    #resolving connection history counters
+    connection_history = counters_dict['connection_history']
+    connection_history['attempts'] = global_status_dict['Connections']
+    connection_history['successful'] = str(int(global_status_dict['Connections']) - 
+                                                  int(global_status_dict['Aborted_connects']))
+    connection_history['percentage_of_max_allowed_reached'] = str(
+            int(global_status_dict['Max_used_connections']) * 
+            int(global_var_dict['max_connections'])) + " % "
+
     #print general_info['running_for']
     #counters = resolve_counters(global_var_dict, global_status_dict)
     #print "counters dict:  " + str(counters_dict)
