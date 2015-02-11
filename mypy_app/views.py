@@ -218,10 +218,10 @@ def build_server_details_dict(global_var_dict, global_status_dict):
     if global_var_dict == {}:
         #from counters_structure import counters_dict
         #print "inside if. yes yes yes"
-        for group in counters_dict:
+        """for group in counters_dict:
             for counter in group:
                 counters_dict[group][counter] = 'n/a'
-        counters_dict['general_info']['available'] = 'No'
+        counters_dict['general_info']['available'] = 'No'"""
         return counters_dict
     
     
@@ -240,11 +240,29 @@ def build_server_details_dict(global_var_dict, global_status_dict):
     #resolving connection history counters
     connection_history = counters_dict['connection_history']
     connection_history['attempts'] = global_status_dict['Connections']
+
     connection_history['successful'] = str(int(global_status_dict['Connections']) - 
                                                   int(global_status_dict['Aborted_connects']))
-    connection_history['percentage_of_max_allowed_reached'] = str(
-            int(global_status_dict['Max_used_connections']) * 
-            int(global_var_dict['max_connections'])) + " % "
+    
+    connection_history['percentage_of_max_allowed_reached'] = str("%.2f"
+            %(float(global_status_dict['Max_used_connections']) / 
+              float(global_var_dict['max_connections']) * 100)) + " %"
+    
+    connection_history['refused'] = global_status_dict['Aborted_connects']
+
+    connection_history['percentage_of_refused_connections'] = str("%.2f"
+            %(float(global_status_dict['Aborted_connects']) /
+              float(global_status_dict['Connections']) * 100)) + " %"
+
+    connection_history['terminated_abruptly'] = global_status_dict['Aborted_clients']
+    connection_history['bytes_received'] = convert_memory(int(global_status_dict['Bytes_received']))
+    connection_history['bytes_sent'] = convert_memory(int(global_status_dict['Bytes_sent']))
+    
+    #resolving current connection counters
+    current_connections = counters_dict['current_connections']
+    current_connections['max_allowed'] = global_var_dict['max_connections']
+
+
 
     #print general_info['running_for']
     #counters = resolve_counters(global_var_dict, global_status_dict)

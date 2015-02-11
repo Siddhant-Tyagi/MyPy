@@ -107,11 +107,32 @@
 			                                                  "<li class='counters_list_css' id='refused'>Refused</li>" +
 			                                                  "<li class='counters_list_css' id='percentage_of_refused_connections'>Percentage of refused connections</li>" +
 			                                                  "<li class='counters_list_css' id='terminated_abruptly'>Terminated abruptly</li>" +
+			                                                  "<li class='counters_list_css' id='bytes_received'>Bytes received from all clients</li>" +
+			                                                  "<li class='counters_list_css' id='bytes_sent'>Bytes sent to all clients</li>" +
 			                                              "</ul>" +
 			                                          "</div>";
 			        $("#server_details").prepend(connection_history_counters);
 			        insert_data();
 			        break;
+			        
+			    case "current_connections":
+			        $(".monitor_group").remove();
+			        var current_conn_counters = "<div class='monitor_group'>" +
+			                                        "<ul>" +
+			                                            "<li class='counters_list_css' id='max_allowed'>Max allowed</li>" +
+			                                            "<li class='counters_list_css' id='open_connections'>Open connections</li>" +
+			                                            "<li class='counters_list_css' id='connection_usage'>Connection usage</li>" +
+			                                            "<li class='counters_list_css' id='running_threads'>Currently running threads</li>" +
+			                                            "<li class='counters_list_css' id='concurrent_connections'>Highest no. of concurrent connections</li>" +
+			                                            "<li class='counters_list_css' id='idle_timeout'>Idle timeout after which a client is diconnected</li>" +
+			                                            "<li class='counters_list_css' id='max_interrupts'>Max number of interrupts before host is blocked</li>" +
+			                                            "<li class='counters_list_css' id='connect_timeout'>Connect timeout</li>" +
+			                                            "<li class='counters_list_css' id='back_log'>Back log</li>" +
+			                                        "</ul>" +
+			                                    "</div>";
+		            $("#server_details").prepend(current_conn_counters);
+		            insert_data();
+		            break;
          }
 		});
          
@@ -256,7 +277,7 @@
         <input type="button" class="tab" value="Connection History" id="connection_history" 
         style="width: 10.8vw; left: 25.1vw;" />
         
-        <input type="button" class="tab" value="Current Connections" id="current_connection" 
+        <input type="button" class="tab" value="Current Connections" id="current_connections" 
         style="width: 11.2vw; left: 36vw;" />
         
         <input type="button" class="tab" value="InnoDB Cache" id="innodb_cache" style="left: 47.3vw;" />
