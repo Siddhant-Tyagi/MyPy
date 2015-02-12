@@ -258,10 +258,25 @@ def build_server_details_dict(global_var_dict, global_status_dict):
     connection_history['bytes_received'] = convert_memory(int(global_status_dict['Bytes_received']))
     connection_history['bytes_sent'] = convert_memory(int(global_status_dict['Bytes_sent']))
     
+
     #resolving current connection counters
     current_connections = counters_dict['current_connections']
     current_connections['max_allowed'] = global_var_dict['max_connections']
+    current_connections['open_connections'] = global_status_dict['Threads_connected']
 
+    current_connections['connection_usage'] = str("%.2f"
+            %(float(global_status_dict['Threads_connected']) /
+              float(global_var_dict['max_connections']) * 100)) + " %"
+
+    current_connections['running_threads'] = global_status_dict['Threads_running']
+    current_connections['concurrent_connections'] = global_status_dict['Max_used_connections']
+    current_connections['idle_timeout'] = convert_time(int(global_var_dict['wait_timeout']))
+    current_connections['max_interrupts'] = global_var_dict['max_connect_errors']
+    current_connections['connect_timeout'] = convert_time(int(global_var_dict['connect_timeout']))
+    current_connections['back_log'] = global_var_dict['back_log']
+
+    
+    #resolving innodb cache counters
 
 
     #print general_info['running_for']

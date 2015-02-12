@@ -133,6 +133,26 @@
 		            $("#server_details").prepend(current_conn_counters);
 		            insert_data();
 		            break;
+		            
+		        case "innodb_cache":
+			        $(".monitor_group").remove();
+			        var innodb_cache_counters = "<div class='monitor_group'>" +
+			                                        "<ul>" +
+			                                            "<li class='counters_list_css' id='innodb_buffer'>Allocated memory</li>" +
+			                                            "<li class='counters_list_css' id='innodb_instances'>Number of InnoDB buffer pool instances</li>" +
+			                                            "<li class='counters_list_css' id='free_memory'>Free Memory</li>" +
+			                                            "<li class='counters_list_css' id='cache_blocks'>Blocks requested from cache</li>" +
+			                                            "<li class='counters_list_css' id='cache_misses'>Cache misses</li>" +
+			                                            "<li class='counters_list_css' id='cache_hit_ratio'>Cache hit ratio</li>" +
+			                                            "<li class='counters_list_css' id='cache_write_wait'>Cache write wait required</li>" +
+			                                            "<li class='counters_list_css' id='adtl_pool_size'>Additional pool size</li>" +
+			                                            "<li class='counters_list_css' id='buffer_max_size'>Innodb change buffer max size</li>" +
+			                                            "<li class='counters_list_css' id='free_page_waits'>No. of waits for free pages</li>" +
+			                                        "</ul>" +
+			                                     "</div>";
+		            $("#server_details").prepend(innodb_cache_counters);
+		            insert_data();
+		            break;
          }
 		});
          
@@ -161,22 +181,24 @@
 			for(var server_name in selected_servers_object) {
 				var index = 0;
 				var diff = 0;
-				
-			    //escaping the server_name of the sapces, to be used as the id 
+				//escaping the server_name of the sapces, to be used as the id 
 				var escaped_server_name = escape_server_name(server_name);
+				var server_counters_length = parseInt($("#" + escaped_server_name + " li").length);
+			    
 				//alert(escaped_server_name);
-				if(total_counters < parseInt($("#" + escaped_server_name + " li").length)) {
+				if(total_counters < server_counters_length) {
 					//alert("inside");
 					//diff = total_counters - parseInt($("#" + server_name + " li").length);
-					for(var index=total_counters; index<parseInt($("#" + escaped_server_name + " li").length); index++) {
-						$("#" + escaped_server_name + " li:eq(" + index + ")").remove();
+					for(var index=total_counters; index < server_counters_length; index++) {
+						//alert(index);
+						$("#" + escaped_server_name + " li:eq(" + (index-1) + ")").remove();
 					}
 						
 				}
 				
-				if(total_counters > parseInt($("#" + escaped_server_name + " li").length)) {
+				if(total_counters > server_counters_length) {
 					//alert("inside second");
-					for(var index=parseInt($("#" + escaped_server_name + " li").length); index<total_counters; index++) {
+					for(var index=server_counters_length; index<total_counters; index++) {
 						$("#" + escaped_server_name + " ul").append("<li class='counters_list_css'></li>");
 					}
 				}

@@ -35,4 +35,17 @@ class groups:
                                               'back_log': 'n/a',
                                             },
 
+                     'innodb_cache'  : {
+                                         'innodb_buffer': 'n/a',
+                                         'innodb_instances': 'n/a',
+                                         'free_memory': 'n/a',
+                                         'cache_blocks': 'n/a',
+                                         'cache_misses': 'n/a',
+                                         'cache_hit_ratio': 'n/a',
+                                         'cache_write_wait': 'n/a',
+                                         'adtl_pool_size': 'n/a',
+                                         'buffer_max_size': 'n/a',
+                                         'free_page_waits': 'n/a',
+                                       },
+
                     }

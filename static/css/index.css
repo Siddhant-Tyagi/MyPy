@@ -125,7 +125,7 @@ hr {
     left: -1.5vw;
     width: 21vw;
     white-space: nowrap;
-    font: 1.8vh/1.8vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 1.4vh/1.4vw "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 }
 
@@ -133,7 +133,7 @@ hr {
     list-style-type: none;
     border: 1px solid green;
     padding: 1.6%;
-    font: 1.8vh/1.8vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 1.6vh/1.6vw "Helvetica Neue", Helvetica, Arial, sans-serif;
     line-height: 4vh;
     
 }
