@@ -146,8 +146,8 @@
 			                                            "<li class='counters_list_css' id='cache_hit_ratio'>Cache hit ratio</li>" +
 			                                            "<li class='counters_list_css' id='cache_write_wait'>Cache write wait required</li>" +
 			                                            "<li class='counters_list_css' id='adtl_pool_size'>Additional pool size</li>" +
-			                                            "<li class='counters_list_css' id='buffer_max_size'>Innodb change buffer max size</li>" +
 			                                            "<li class='counters_list_css' id='free_page_waits'>No. of waits for free pages</li>" +
+			                                            "<li class='counters_list_css' id='buffer_max_size'>Innodb change buffer max size</li>" +
 			                                        "</ul>" +
 			                                     "</div>";
 		            $("#server_details").prepend(innodb_cache_counters);
@@ -191,7 +191,7 @@
 					//diff = total_counters - parseInt($("#" + server_name + " li").length);
 					for(var index=total_counters; index < server_counters_length; index++) {
 						//alert(index);
-						$("#" + escaped_server_name + " li:eq(" + (index-1) + ")").remove();
+						$("#" + escaped_server_name + " li:eq(" + total_counters + ")").remove();
 					}
 						
 				}

@@ -44,8 +44,8 @@ class groups:
                                          'cache_hit_ratio': 'n/a',
                                          'cache_write_wait': 'n/a',
                                          'adtl_pool_size': 'n/a',
-                                         'buffer_max_size': 'n/a',
                                          'free_page_waits': 'n/a',
+                                         'buffer_max_size': 'n/a',
                                        },
 
                     }

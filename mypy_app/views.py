@@ -277,6 +277,32 @@ def build_server_details_dict(global_var_dict, global_status_dict):
 
     
     #resolving innodb cache counters
+    innodb_cache = counters_dict['innodb_cache']
+    innodb_cache['innodb_buffer'] = convert_memory(int(global_var_dict['innodb_buffer_pool_size']))
+    innodb_cache['innodb_instances'] = global_var_dict['innodb_buffer_pool_instances']
+    
+    #innodb free memory
+    innodb_pages_data = int(global_status_dict['Innodb_buffer_pool_pages_data'])
+    innodb_pages_free = int(global_status_dict['Innodb_buffer_pool_pages_free'])
+        
+    page_size = float(global_var_dict['innodb_buffer_pool_size'])/float(global_status_dict['Innodb_buffer_pool_pages_total'])
+    if innodb_pages_data>0:
+        innodb_cache['free_memory'] = convert_memory(page_size*innodb_pages_free)
+
+    innodb_cache['cache_blocks'] = convert_memory(int(global_status_dict['Innodb_buffer_pool_read_requests']))
+    innodb_cache['cache_misses'] = global_status_dict['Innodb_buffer_pool_reads']
+    
+    innodb_cache['cache_hit_ratio'] = str("%.2f"
+           %(float(global_status_dict['Innodb_buffer_pool_reads']) /
+             float(global_status_dict['Innodb_buffer_pool_read_requests']) * 100)) + " %"
+
+    innodb_cache['cache_write_wait'] = str("%.2f"
+            %(float(global_status_dict['Innodb_buffer_pool_wait_free']) /
+              float(global_status_dict['Innodb_buffer_pool_write_requests'])))
+
+    innodb_cache['adtl_pool_size'] = convert_memory(int(global_var_dict['innodb_additional_mem_pool_size']))
+    innodb_cache['free_page_waits'] = global_status_dict['Innodb_buffer_pool_wait_free']
+    innodb_cache['buffer_max_size'] = global_var_dict['innodb_change_buffer_max_size']
 
 
     #print general_info['running_for']
