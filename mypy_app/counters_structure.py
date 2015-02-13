@@ -48,4 +48,13 @@ class groups:
                                          'buffer_max_size': 'n/a',
                                        },
 
+                     'threads':      {
+                                      'thread_cache_size': 'n/a',
+                                      'threads_cached': 'n/a',
+                                      'threads_created': 'n/a',
+                                      'cache_hit_rate': 'n/a',
+                                      'slow_launch_time': 'n/a',
+                                      'slow_launch_threads': 'n/a',
+                                     },
+
                     }

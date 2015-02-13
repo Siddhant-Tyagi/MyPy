@@ -42,7 +42,7 @@
 		}
 		
 		function data_collection_loop() {
-			setTimeout(update_server_obj, 12000);
+			setTimeout(update_server_obj, 15000);
 		}
 		
 		data_collection_loop();
@@ -151,6 +151,22 @@
 			                                        "</ul>" +
 			                                     "</div>";
 		            $("#server_details").prepend(innodb_cache_counters);
+		            insert_data();
+		            break;
+		            
+		        case "threads":
+			        $(".monitor_group").remove();
+			        var threads_counters = "<div class='monitor_group'>" +
+			                                        "<ul>" +
+			                                            "<li class='counters_list_css' id='thread_cache_size'>Number of threads that can be cached</li>" +
+			                                            "<li class='counters_list_css' id='threads_cached'>Number of threads in cache</li>" +
+			                                            "<li class='counters_list_css' id='threads_created'>Threads created to handle connections</li>" +
+			                                            "<li class='counters_list_css' id='cache_hit_rate'>Thread cache hit rate</li>" +
+			                                            "<li class='counters_list_css' id='slow_launch_time'>Min. launch time for a thread to be considered slow</li>" +
+			                                            "<li class='counters_list_css' id='slow_launch_threads'>No. of slow launch threads</li>" +
+			                                        "</ul>" +
+			                                     "</div>";
+		            $("#server_details").prepend(threads_counters);
 		            insert_data();
 		            break;
          }

@@ -304,7 +304,22 @@ def build_server_details_dict(global_var_dict, global_status_dict):
     innodb_cache['free_page_waits'] = global_status_dict['Innodb_buffer_pool_wait_free']
     innodb_cache['buffer_max_size'] = global_var_dict['innodb_change_buffer_max_size']
 
+    #resolving threads counter
+    threads = counters_dict['threads']
+    threads['thread_cache_size'] = global_var_dict['thread_cache_size']
+    threads['threads_cached'] = global_status_dict['Threads_cached']
+    threads['threads_created'] = global_status_dict['Threads_created']
+    
+    #cache hit rate
+    created = int(threads['threads_created'])
+    conns = int(global_status_dict['Connections'])
+    if created > conns:
+        threads['cache_hit_rate'] = '100'
+    else:
+        threads['cache_hit_rate'] = str((1-(created/conns)) * 100) + " %"
 
+    threads['slow_launch_time'] = global_var_dict['slow_launch_time']
+    threads['slow_launch_threads'] = global_status_dict['Slow_launch_threads']
     #print general_info['running_for']
     #counters = resolve_counters(global_var_dict, global_status_dict)
     #print "counters dict:  " + str(counters_dict)
