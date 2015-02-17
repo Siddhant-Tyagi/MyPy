@@ -9,6 +9,7 @@ from mypy_mysqldb import *
 from sqlite_operations import *
 from utility import *
 from counters_structure import groups
+from math import ceil
 
 def adding_server(request):
     context = RequestContext(request)
@@ -320,6 +321,27 @@ def build_server_details_dict(global_var_dict, global_status_dict):
 
     threads['slow_launch_time'] = global_var_dict['slow_launch_time']
     threads['slow_launch_threads'] = global_status_dict['Slow_launch_threads']
+
+    #resolving query cache counters
+    query_cache = counters_dict['query_cache']
+    query_cache['enabled'] = global_var_dict['have_query_cache']
+    query_cache['type'] = global_var_dict['query_cache_type']
+    query_cache['cache_size'] = convert_memory(int(global_var_dict['query_cache_size']))
+    query_cache['max_size'] = convert_memory(int(global_var_dict['query_cache_limit']))
+    query_cache['free_memory'] = convert_memory(int(global_status_dict['Qcache_free_memory']))
+    query_cache['query_buffer'] = convert_memory(int(global_var_dict['query_prealloc_size']))
+    query_cache['block_size'] = convert_memory(int(global_var_dict['query_cache_min_res_unit']))
+    query_cache['total_blocks'] = global_status_dict['Qcache_total_blocks']
+    query_cache['free_blocks'] = global_status_dict['Qcache_free_blocks']
+
+    query_cache['fragmentation'] = str("%.2f"
+            %(float(global_status_dict['Qcache_free_blocks']) /
+              float(ceil((float(global_status_dict['Qcache_total_blocks'])) /2 )) * 100 )) + " %"
+   
+    query_cache['query_cache'] = global_status_dict['Qcache_queries_in_cache']
+    query_cache['query_not_cached'] = global_status_dict['Qcache_not_cached']
+    query_cache['cache_misses'] = global_status_dict['Qcache_inserts']
+    query_cache['cache_hits'] = global_status_dict['']
     #print general_info['running_for']
     #counters = resolve_counters(global_var_dict, global_status_dict)
     #print "counters dict:  " + str(counters_dict)

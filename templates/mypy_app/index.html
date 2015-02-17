@@ -169,6 +169,33 @@
 		            $("#server_details").prepend(threads_counters);
 		            insert_data();
 		            break;
+		            
+		        case "query_cache":
+			        $(".monitor_group").remove();
+			        var query_cache_counters = "<div class='monitor_group'>" +
+			                                        "<ul>" +
+			                                            "<li class='counters_list_css' id='enabled'>Enabled?</li>" +
+			                                            "<li class='counters_list_css' id='type'>Type</li>" +
+			                                            "<li class='counters_list_css' id='cache_size'>Cache size</li>" +
+			                                            "<li class='counters_list_css' id='max_size'>Max size of result set that can be cached</li>" +
+			                                            "<li class='counters_list_css' id='free_memory'>Free memory</li>" +
+			                                            "<li class='counters_list_css' id='query_buffer'>Query parsing and execution buffer</li>" +
+			                                            "<li class='counters_list_css' id='block_size'>Block size</li>" +
+			                                            "<li class='counters_list_css' id='total_blocks'>Total blocks</li>" +
+			                                            "<li class='counters_list_css' id='free_blocks'>Free blocks</li>" +
+			                                            "<li class='counters_list_css' id='fragmentation'>Fragmentation</li>" +
+			                                            "<li class='counters_list_css' id='query_cache'>Queries in cache</li>" +
+			                                            "<li class='counters_list_css' id='query_not_cached'>Queries not cached</li>" +
+			                                            "<li class='counters_list_css' id='cache_misses'>Cache misses</li>" +
+			                                            "<li class='counters_list_css' id='cache_hits'>Cache hits</li>" +
+			                                            "<li class='counters_list_css' id='cache_hit_ratio'>Cache hit ratio</li>" +
+			                                            "<li class='counters_list_css' id='queries_pruned'>Queries pruned from cache</li>" +
+			                                            "<li class='counters_list_css' id='pruned_percentage'>Pruned as percentage of inserts</li>" +
+			                                        "</ul>" +
+			                                     "</div>";
+		            $("#server_details").prepend(query_cache_counters);
+		            insert_data();
+		            break;
          }
 		});
          

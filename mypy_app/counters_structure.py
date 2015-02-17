@@ -56,5 +56,25 @@ class groups:
                                       'slow_launch_time': 'n/a',
                                       'slow_launch_threads': 'n/a',
                                      },
+                     
+                     'query_cache':  {
+                                      'enabled': 'n/a',
+                                      'type': 'n/a',
+                                      'cache_size': 'n/a',
+                                      'max_size': 'n/a',
+                                      'free_memory': 'n/a',
+                                      'query_buffer': 'n/a',
+                                      'block_size': 'n/a',
+                                      'total_blocks': 'n/a',
+                                      'free_blocks': 'n/a',
+                                      'fragmentation': 'n/a',
+                                      'query_cache': 'n/a',
+                                      'query_not_cached': 'n/a',
+                                      'cache_misses': 'n/a',
+                                      'cache_hits': 'n/a',
+                                      'cache_hit_ratio': 'n/a',
+                                      'queries_pruned': 'n/a',
+                                      'pruned_percentage': 'n/a',
+                                     },
 
                     }
