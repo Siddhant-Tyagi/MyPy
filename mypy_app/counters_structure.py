@@ -77,4 +77,27 @@ class groups:
                                       'pruned_percentage': 'n/a',
                                      },
 
+                     'index_usage':  {
+                                      'full_table_scans': 'n/a',
+                                      'buffer': 'n/a',
+                                      'select_scans': 'n/a',
+                                      'buffer_joins': 'n/a',
+                                      'joins_required': 'n/a',
+                                      'joins_revaluate': 'n/a',
+                                     },
+
+                     'statements': {
+                                    'all': 'n/a',
+                                    'selects': 'n/a',
+                                    'inserts': 'n/a',
+                                    'updates': 'n/a',
+                                    'deletes': 'n/a',
+                                    'dms': 'n/a',
+                                    'rows': 'n/a',
+                                    'rows_index': 'n/a',
+                                    'avg_rows': 'n/a',
+                                    'rows_percentage': 'n/a',
+                                    'max_percentage': 'n/a',
+                                   },
+
                     }

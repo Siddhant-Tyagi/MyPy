@@ -196,6 +196,43 @@
 		            $("#server_details").prepend(query_cache_counters);
 		            insert_data();
 		            break;
+		            
+		            case "index_usage":
+			        $(".monitor_group").remove();
+			        var index_usage_counters = "<div class='monitor_group'>" +
+			                                        "<ul>" +
+			                                            "<li class='counters_list_css' id='full_table_scans'>Percentage of full table scans</li>" +
+			                                            "<li class='counters_list_css' id='buffer'>Buffer for full table scans (per client)</li>" +
+			                                            "<li class='counters_list_css' id='select_scans'>SELECTs requiring full table scan</li>" +
+			                                            "<li class='counters_list_css' id='buffer_joins'>Buffer for joins requiring full table scan (per client)</li>" +
+			                                            "<li class='counters_list_css' id='joins_required'>Joins requiring full scan of second and subsequent tables</li>" +
+			                                            "<li class='counters_list_css' id='joins_revaluate'>Joins that reevaluate index selection for each row in a join</li>" +
+			                                            "</ul>" +
+			                                     "</div>";
+		            $("#server_details").prepend(index_usage_counters);
+		            insert_data();
+		            break;
+		            
+		            case "statements":
+			        $(".monitor_group").remove();
+			        var statements_counters =   "<div class='monitor_group'>" +
+			                                        "<ul>" +
+			                                            "<li class='counters_list_css' id='all'>All statements</li>" +
+			                                            "<li class='counters_list_css' id='selects'>SELECTs</li>" +
+			                                            "<li class='counters_list_css' id='inserts'>INSERTs</li>" +
+			                                            "<li class='counters_list_css' id='updates'>UPDATEs</li>" +
+			                                            "<li class='counters_list_css' id='deletes'>DELETEs</li>" +
+			                                            "<li class='counters_list_css' id='dms'>Total Data Manipulation Statements (DMS)</li>" +
+			                                            "<li class='counters_list_css' id='rows'>Total rows returned</li>" +
+			                                            "<li class='counters_list_css' id='rows_index'>Total rows returned via indexes</li>" +
+			                                            "<li class='counters_list_css' id='avg_rows'>Avg rows per query</li>" +
+			                                            "<li class='counters_list_css' id='rows_percentage'>Percentage of rows returned using indexes</li>" +
+			                                            "<li class='counters_list_css' id='max_prepared'>Max Prepared statements configuration</li>" +
+			                                        "</ul>" +
+			                                     "</div>";
+		            $("#server_details").prepend(statements_counters);
+		            insert_data();
+		            break;
          }
 		});
          

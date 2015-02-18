@@ -341,7 +341,48 @@ def build_server_details_dict(global_var_dict, global_status_dict):
     query_cache['query_cache'] = global_status_dict['Qcache_queries_in_cache']
     query_cache['query_not_cached'] = global_status_dict['Qcache_not_cached']
     query_cache['cache_misses'] = global_status_dict['Qcache_inserts']
-    query_cache['cache_hits'] = global_status_dict['']
+    query_cache['cache_hits'] = global_status_dict['Qcache_hits']
+    
+    try:
+        query_cache['cache_hit_ratio'] = str("%.2f"
+            %(float(global_status_dict['Qcache_hits'])/
+            (float(global_status_dict['Qcache_inserts']) + float(global_status_dict['Qcache_hits']))
+            * 100)) + " %"
+    except:
+        query_cache['cache_hit_ratio'] = "0 %"
+    
+    query_cache['queries_pruned'] = global_status_dict['Qcache_lowmem_prunes']
+    
+    try:
+        query_cache['pruned_percentage'] = str("%.2f"
+                %(float(global_status_dict['Qcache_lowmem_prunes']) /
+                  float(global_status_dict['Qcache_inserts']) * 100)) + " %"
+    except:
+        query_cache['pruned_percentage'] = "0.00 %"
+
+    #resolving index usage counters
+    index_usage = counters_dict['index_usage']
+
+    #full table scan
+    numerator = int(global_status_dict['Handler_read_rnd']) + int(global_status_dict['Handler_read_rnd_next'])
+    denominator = numerator + int(global_status_dict['Handler_read_first']) + int(global_status_dict['Handler_read_next']) + int(global_status_dict['Handler_read_key']) + int(global_status_dict['Handler_read_prev'])
+    try:
+        index_usage['full_table_scans'] = str("%.2f"
+                %(float(numerator) / float(denominator) * 100)) + " %"
+    except:
+        index_usage['full_table_scans'] = "0.00 %"
+
+    index_usage['buffer'] = convert_memory(int(global_var_dict['read_buffer_size']))
+    index_usage['select_scans'] = global_status_dict['Select_scan']
+    index_usage['buffer_joins'] = global_var_dict['join_buffer_size']
+    index_usage['joins_required'] = global_status_dict['Select_full_join']
+    index_usage['joins_revaluate'] = global_status_dict['Select_range_check']
+
+    #resolving statements counters
+    statements = counters_dict['statements']
+    statements['all'] = global_status_dict['Questions']
+    statements['selects'] = str(int(global_status_dict['Com_select']) + int(global_status_dict['Qcache_hits']))
+
     #print general_info['running_for']
     #counters = resolve_counters(global_var_dict, global_status_dict)
     #print "counters dict:  " + str(counters_dict)
