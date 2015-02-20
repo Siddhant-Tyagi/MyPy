@@ -97,7 +97,7 @@ class groups:
                                     'rows_index': 'n/a',
                                     'avg_rows': 'n/a',
                                     'rows_percentage': 'n/a',
-                                    'max_percentage': 'n/a',
+                                    'max_prepared': 'n/a',
                                    },
 
                     }

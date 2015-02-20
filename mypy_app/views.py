@@ -71,8 +71,8 @@ def index(request):
                 server_name = request.POST.get("single_selected_server")
                 current_server_obj = add_server.objects.filter(mysql_server_name=server_name)[0]
                 #print "current_server_obj " + str(current_server_obj)
-                global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
-                server_dict = build_server_details_dict(global_var_dict, global_status_dict)
+                global_var_dict, global_status_dict, slave_status_dict = get_mysql_data(current_server_obj)
+                server_dict = build_server_details_dict(global_var_dict, global_status_dict, slave_status_dict)
                 servers_object[server_name] = server_dict
                 return HttpResponse(json.dumps(servers_object))
 
@@ -81,10 +81,10 @@ def index(request):
                 #print server_list
                 for current_server_obj in server_list:
                     #print str(current_server_obj.mysql_server_name) + "  " + str(current_server_obj.mysql_host)
-                    global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
+                    global_var_dict, global_status_dict, slave_status_dict = get_mysql_data(current_server_obj)
                     #if global_var_dict == {}:
                         #print current_server_obj.mysql_host
-                    server_dict = build_server_details_dict(global_var_dict, global_status_dict)
+                    server_dict = build_server_details_dict(global_var_dict, global_status_dict, slave_status_dict)
                     #print server_dict['general_info']['available']
                     servers_object[current_server_obj.mysql_server_name] = server_dict
 
@@ -211,21 +211,16 @@ def realtime(request):
     context_dict = {"test_var": "realtime page",}
     return render_to_response('mypy_app/realtime.html', context_dict, context)
 
-def build_server_details_dict(global_var_dict, global_status_dict):
+def build_server_details_dict(global_var_dict, global_status_dict, slave_status_dict):
     #print "inside func"
     #print "inside build server details"
     counter_object = groups()
     counters_dict = counter_object.counters_dict
     if global_var_dict == {}:
-        #from counters_structure import counters_dict
-        #print "inside if. yes yes yes"
-        """for group in counters_dict:
-            for counter in group:
-                counters_dict[group][counter] = 'n/a'
-        counters_dict['general_info']['available'] = 'No'"""
         return counters_dict
     
-    
+    if slave_status_dict != {}:
+        print slave_status_dict
     #resolving general info counters
     general_info = counters_dict['general_info']
 
@@ -381,8 +376,59 @@ def build_server_details_dict(global_var_dict, global_status_dict):
     #resolving statements counters
     statements = counters_dict['statements']
     statements['all'] = global_status_dict['Questions']
-    statements['selects'] = str(int(global_status_dict['Com_select']) + int(global_status_dict['Qcache_hits']))
-
+    try:
+        statements['selects'] = str(int(global_status_dict['Com_select']) + int(global_status_dict['Qcache_hits']))
+    except:
+        statements['selects'] = "0.00"
+        
+    try:
+        statements['inserts'] = str("%.2f"
+                    %(float(global_status_dict['Com_insert']) + float(global_status_dict['Com_replace']))
+                    / float(global_status_dict['Questions']))
+    except:
+        statements['inserts'] = "0.00"
+    
+    try:
+        statements['updates'] = str("%.2f"
+                    %(float(global_status_dict['Com_update']) / float(global_status_dict['Questions'])))
+    except:
+        statements['updates'] = "0.00"
+    
+    try:
+        statements['deletes'] = str("%.2f"
+                    %(float(global_status_dict['Com_delete']) / float(global_status_dict['Questions'])))
+    except:
+        statements['delete'] = "0.00"
+    
+    
+    statements['dms'] = str(float(statements['selects']) + float(statements['inserts']) + float(statements['updates']) +
+                             float(statements['deletes']))
+                        
+    statements['rows'] = str("%.2f"
+                %(float(global_status_dict['Handler_read_first']) + float(global_status_dict['Handler_read_key'])
+                  + float(global_status_dict['Handler_read_next']) + float(global_status_dict['Handler_read_prev']) +
+                  float(global_status_dict['Handler_read_rnd']) + float(global_status_dict['Handler_read_rnd_next'])
+                  + float(global_status_dict['Sort_rows'])))
+    
+    statements['rows_index'] = str("%.2f"
+            %(float(global_status_dict['Handler_read_first']) + float(global_status_dict['Handler_read_key']) + 
+              float(global_status_dict['Handler_read_next']) + float(global_status_dict['Handler_read_prev'])))
+    
+    try:
+        statements['avg_rows'] = str("%.2f"
+                    %(float(statements['rows']) / float(global_status_dict['Questions'])))
+    except:
+        statements['avg_rows'] = "0.00"
+    
+    statements['rows_percentage'] = str("%.2f"
+                %(float(statements['rows_index']) / float(statements['rows']) * 100)) + " %"
+    
+    statements['max_prepared'] = global_var_dict['max_prepared_stmt_count']
+    
+    #resolving replication counters
+    #if slave_status_dict != {}:
+        
+      
     #print general_info['running_for']
     #counters = resolve_counters(global_var_dict, global_status_dict)
     #print "counters dict:  " + str(counters_dict)

@@ -43,6 +43,19 @@ def get_mysql_data(current_server_object):
         global_variables = cursor_obj.fetchall()
         cursor_obj.execute("show global status")
         global_status = cursor_obj.fetchall()
+        cursor_obj.execute("show slave status")
+        try:
+            slave = cursor_obj.description
+            slave_field = [i[0] for i in slave]
+            slave_values = cursor_obj.fetchall()
+            slave_status = {}
+            for key, value in zip(slave_field, slave_values[0]):
+                slave_status[key] = str(value)
+            
+            #print slave_status
+        
+        except:
+            slave_status = {}
         connection_obj.close()
-        return dict(global_variables), dict(global_status)
-    return {}, {}
+        return dict(global_variables), dict(global_status), dict(slave_status)
+    return {}, {}, {}
