@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 import json
-from django.views.decorators.csrf import csrf_exempt
+from threading import Thread
+import Queue
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from mypy_app.models import add_server
@@ -10,6 +11,9 @@ from sqlite_operations import *
 from utility import *
 from counters_structure import groups
 from math import ceil
+import time
+from mypy_app.mypy_mysqldb import get_mysql_data
+
 
 def adding_server(request):
     context = RequestContext(request)
@@ -61,33 +65,77 @@ def adding_server(request):
 
 def index(request):
     servers_object = {}
+    t1 = 0.00
     context = RequestContext(request)
     #check if request method is POST
     if request.method == 'POST':
         #check if request is ajax and return json response
         #this will be used to return MySQL counter's data to the template
         if request.is_ajax():
+            #fires an event when the server checkbox is checked
             if request.POST.get("single_selected_server"):
                 server_name = request.POST.get("single_selected_server")
+                #get the details of the current server from sqlite db
                 current_server_obj = add_server.objects.filter(mysql_server_name=server_name)[0]
-                #print "current_server_obj " + str(current_server_obj)
-                global_var_dict, global_status_dict, slave_status_dict = get_mysql_data(current_server_obj)
-                server_dict = build_server_details_dict(global_var_dict, global_status_dict, slave_status_dict)
-                servers_object[server_name] = server_dict
+                #initialing a thread safe queue for storing the server details
+                single_server_queue = Queue.Queue()
+                #spawning a thread with the current mysql credentials from the sqlite database
+                #this thread creates a new connection and get the mysql details
+                connection_thread = Thread(target=get_mysql_data, args=(current_server_obj, single_server_queue))
+                connection_thread.start()
+                #wait for the thread to return
+                connection_thread.join()
+                #getting the dictionary of the global variables, status and slave status 
+                current_server_data = single_server_queue.get()
+                #structure of the dictionary is:
+                # { 'Server_name': {
+                #                   'global_var_dict': {},
+                #                   'global_status_dict': {},
+                #                   'slave_status_dict': {},
+                #                   }
+                # }
+                
+                #building the counters value dict from the mysql data
+                server_dict = build_server_details_dict(
+                                            current_server_data[current_server_data.keys()[0]]['global_var_dict'],
+                                            current_server_data[current_server_data.keys()[0]]['global_status_dict'],
+                                            current_server_data[current_server_data.keys()[0]]['slave_status_dict']
+                                        )
+                
+                servers_object[current_server_data.keys()[0]] = server_dict
                 return HttpResponse(json.dumps(servers_object))
-
+            
+            #enters else every other data collection interval and resolves all the servers in sqlite database
             else:
                 server_list = add_server.objects.all()
-                #print server_list
+                server_info_queue = Queue.Queue()
+                thread_list = []
+                start_time = time.time()
                 for current_server_obj in server_list:
+                    #start_time = time.time()
+                    connection_thread = Thread(target=get_mysql_data, args=(current_server_obj, server_info_queue))
+                    connection_thread.start()
+                    thread_list.append(connection_thread)
+                
+                for thread in thread_list:
+                    thread.join()
+                print "Time taken: " + str(time.time() - start_time)
+                for _ in xrange(len(server_list)):
+                    current_server_data = server_info_queue.get()
                     #print str(current_server_obj.mysql_server_name) + "  " + str(current_server_obj.mysql_host)
-                    global_var_dict, global_status_dict, slave_status_dict = get_mysql_data(current_server_obj)
+                    #global_var_dict, global_status_dict, slave_status_dict = get_mysql_data(current_server_obj)
+                    #t1 += time.time() - start_time
                     #if global_var_dict == {}:
                         #print current_server_obj.mysql_host
-                    server_dict = build_server_details_dict(global_var_dict, global_status_dict, slave_status_dict)
+                    server_dict = build_server_details_dict(
+                                            current_server_data[current_server_data.keys()[0]]['global_var_dict'],
+                                            current_server_data[current_server_data.keys()[0]]['global_status_dict'],
+                                            current_server_data[current_server_data.keys()[0]]['slave_status_dict']
+                                        )
                     #print server_dict['general_info']['available']
-                    servers_object[current_server_obj.mysql_server_name] = server_dict
-
+                    servers_object[current_server_data.keys()[0]] = server_dict
+                    
+                #print t1
                 return HttpResponse(json.dumps(servers_object))
 
             """#get the selected checkbox values from jquery
@@ -196,7 +244,7 @@ def index(request):
     context_dict = {
             'server_list': add_server.objects.all(), 
             }
-
+    
     return render_to_response('mypy_app/index.html', context_dict, context)
 
 
@@ -212,6 +260,8 @@ def realtime(request):
     return render_to_response('mypy_app/realtime.html', context_dict, context)
 
 def build_server_details_dict(global_var_dict, global_status_dict, slave_status_dict):
+    #global t1
+    #start_time = time.time()
     #print "inside func"
     #print "inside build server details"
     counter_object = groups()
@@ -219,8 +269,6 @@ def build_server_details_dict(global_var_dict, global_status_dict, slave_status_
     if global_var_dict == {}:
         return counters_dict
     
-    if slave_status_dict != {}:
-        print slave_status_dict
     #resolving general info counters
     general_info = counters_dict['general_info']
 
@@ -424,6 +472,8 @@ def build_server_details_dict(global_var_dict, global_status_dict, slave_status_
                 %(float(statements['rows_index']) / float(statements['rows']) * 100)) + " %"
     
     statements['max_prepared'] = global_var_dict['max_prepared_stmt_count']
+    
+    #t1 += (time.time() - start_time)
     
     #resolving replication counters
     #if slave_status_dict != {}:

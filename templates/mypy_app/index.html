@@ -30,7 +30,7 @@
 			//selected_servers_name_list = []
 			//js array with the list of selected servers
 	 	    //alert(JSON.stringify(selected_servers_name_list));
-			$.post('/mypy/', { server_list_from_jquery: JSON.stringify(get_server_checklist()),
+			$.post('/mypy/', {
 					           csrfmiddlewaretoken: '{{ csrf_token }}',
 					          }, 
 					function(json_response){

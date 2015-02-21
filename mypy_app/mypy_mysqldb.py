@@ -1,4 +1,5 @@
 import MySQLdb as my
+import time
 
 #connection_obj = my.connect
 
@@ -27,7 +28,8 @@ def connect_to_server(connection_detail_object):
     return ("Connection to " + connection_detail_object.mysql_server_name +  " successful.!!"), connection_obj
 
 
-def get_mysql_data(current_server_object):
+def get_mysql_data(current_server_object, server_info_queue):
+    #start_time = time.time()
     #global connection_obj
     #print "inside get_mysql_data method"
     #print current_server_object
@@ -43,19 +45,31 @@ def get_mysql_data(current_server_object):
         global_variables = cursor_obj.fetchall()
         cursor_obj.execute("show global status")
         global_status = cursor_obj.fetchall()
-        cursor_obj.execute("show slave status")
         try:
+            cursor_obj.execute("show slave status")
             slave = cursor_obj.description
             slave_field = [i[0] for i in slave]
             slave_values = cursor_obj.fetchall()
             slave_status = {}
             for key, value in zip(slave_field, slave_values[0]):
                 slave_status[key] = str(value)
-            
-            #print slave_status
         
         except:
             slave_status = {}
         connection_obj.close()
-        return dict(global_variables), dict(global_status), dict(slave_status)
-    return {}, {}, {}
+        server_info_queue.put({str(current_server_object.mysql_server_name): 
+                               {
+                                'global_var_dict': dict(global_variables), 
+                                'global_status_dict': dict(global_status), 
+                                'slave_status_dict': dict(slave_status)
+                                }
+                              })
+
+    else:
+        server_info_queue.put({str(current_server_object.mysql_server_name): 
+                               {
+                                'global_var_dict': {}, 
+                                'global_status_dict': {}, 
+                                'slave_status_dict': {}
+                                }
+                              })
