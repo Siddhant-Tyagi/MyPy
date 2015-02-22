@@ -137,3 +137,11 @@ hr {
     line-height: 4vh;
     
 }
+
+.side_list_link  {
+    cursor: pointer;
+}
+
+.side_list_link:hover {
+	text-decoration: underline;
+}

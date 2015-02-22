@@ -6,6 +6,7 @@
 {% block heading %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/add_server.css' %}" />
     <script src="{% static 'js/add_server.js' %}"></script>
+    <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
    <h1>MyPy</h1>
 {% endblock %}
 
@@ -15,7 +16,7 @@
     {% block body_tag %}
         {% if server_list %}
             <span>
-                <ul style="position:relative; width: 12vw; height: 70vh; border: 0.25vw solid gray; 
+                <ul style="position:fixed; top: 17vh; width: 12vw; height: 70vh; border: 0.25vw solid gray; 
                  overflow-y: auto; margin-left: 0.08vw; padding: 2.1vw;">
 	             {% for server in server_list %}
 	                 <li class="server_list_padding">{{ server.mysql_server_name }}</li>
@@ -30,8 +31,8 @@
                 function add_server_alert(){
 					alert(htmlDecode("{{ add_server_info }}"));
 	                //if the connection to MySQL server is successful then redirect to mypy page
-	                if("{{ add_server_info }}".search("successful") != -1)
-	                    window.location = "/mypy/";
+	                //if("{{ add_server_info }}".search("successful") != -1)
+	                window.location = "/mypy/";
                 }
                window.onload = add_server_alert;
             </script>
@@ -44,7 +45,7 @@
 	            <span class="label">{{ field.label }}</span> {{ field }} </br></br>
 	        {% endfor %}
 
-	        <input type="submit" name="submit" value="Add Server" class="btn" />
+	        <input type="submit" name="submit" value="Save details" class="btn" />
         </form>
             </span>
     {% endblock %}

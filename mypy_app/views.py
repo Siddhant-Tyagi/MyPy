@@ -32,10 +32,10 @@ def adding_server(request):
             if connection_obj:
                 connection_obj.close()
             #if the connection to MySQL server fails, delete this entry from the sqlite db
-            if "successful" not in adding_server_msg:
-                current_object.delete()
+            #if "successful" not in adding_server_msg:
+            #current_object.delete()
             return render_to_response('mypy_app/add_server.html', 
-                    {
+                      {
                         'form': form, 
                         'add_server_info': adding_server_msg,
                         'server_list': add_server.objects.all()\
@@ -476,7 +476,29 @@ def build_server_details_dict(global_var_dict, global_status_dict, slave_status_
     #t1 += (time.time() - start_time)
     
     #resolving replication counters
-    #if slave_status_dict != {}:
+    if slave_status_dict != {}:
+        replication = counters_dict['replication']
+        if global_status_dict['Slave_running']=="ON": replication['running'] = "Yes"
+        replication['read_only'] = global_var_dict['read_only'] 
+        replication['io_running'] = slave_status_dict['Slave_IO_Running']
+        replication['io_state'] = slave_status_dict['Slave_IO_State']
+        replication['slave_sql'] = slave_status_dict['Slave_SQL_Running']
+        replication['sbm'] = slave_status_dict['Seconds_Behind_Master']
+        replication['skip'] = global_var_dict['slave_skip_errors']
+        replication['err_no'] = slave_status_dict['Last_Errno']
+        if len(slave_status_dict['Last_Error']) > 0: replication['err_msg'] = slave_status_dict['Last_Error']
+        if len(slave_status_dict['Last_IO_Error']) > 0: replication['io_err'] = slave_status_dict['Last_IO_Error']
+        replication['ntw_timeout'] = convert_time(int(global_var_dict['slave_net_timeout']))
+        replication['trsc_count'] = global_status_dict['Slave_retried_transactions']
+        replication['m_host'] = slave_status_dict['Master_Host']
+        replication['m_port'] = slave_status_dict['Master_Port']
+        replication['m_user'] = slave_status_dict['Master_User'] 
+        replication['mlog_file'] = slave_status_dict['Master_Log_File']
+        replication['mlog_read_pos'] = slave_status_dict['Read_Master_Log_Pos']
+        replication['rm_log'] = slave_status_dict['Relay_Master_Log_File']
+        replication['rm_log_pos'] = slave_status_dict['Exec_Master_Log_Pos']
+        replication['rlog'] = slave_status_dict['Relay_Log_File']
+        replication['rlog_pos'] = slave_status_dict['Relay_Log_Pos'] 
         
       
     #print general_info['running_for']

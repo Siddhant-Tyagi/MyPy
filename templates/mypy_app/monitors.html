@@ -5,7 +5,13 @@
 		<script>
 $(document).ready(function(){
 		$("#t1").click(function(){
-			alert("Value: " + $("#t1").val());
+			//alert("Value: " + $("#t1").val());
+			var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+            alert("width: " + w + " Height: " + h);
+            var width = w * 0.5;
+            var height = h * 0.88;
+			window.open('http://127.0.0.1:8000/mypy/add_server/', 'Add Server', 'height= ' + height + ', width= ' + width + ', left= ' + w/3 + "'");
 			});
 		});
 		</script>

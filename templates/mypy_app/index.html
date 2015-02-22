@@ -9,27 +9,34 @@
 <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
 <script>
        $(document).ready(function(){
+		//display the edit server page with the selected server details 
+		$(".side_list_link").click(function(){
+			var name = ($(this).text());
+			var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+            //alert("width: " + w + " Height: " + h);
+            var width = w * 0.5;
+            var height = h * 0.88;
+			edit_server = window.open('/mypy/add_server/', 'Add Server', 'height= ' + (h * 0.88) + 
+			                           ', width= ' + (w * 0.5) + ', left= ' + w/3 + ', top=' + h/8 + "'");
+			$(edit_server).load(function(){
+				//alert("hello");
+				edit_server.$("#id_mysql_server_name").val(name);
+				edit_server.$("#id_mysql_host").val(name);
+				//edit_server.document.getElementById("id_mysql_server_name").("hello");
+				
+			});
+		});
+		
 		/*initializing js object of all the selected servers,
 		later to be used to maintain the couters object for each server*/		 
 		selected_servers_object = {};
 		selected_servers_name_list = [];
 		
-		/*$("#delete_server").click(function() {
-			$.post('/mypy/', {server_list_from_jquery: JSON.stringify(get_server_checklist()),
-				              csrfmiddlewaretoken: '{{ csrf_token }}',
-				             },
-				    function() {
-						alert("deleted serevr");
-					}
-			);
-		});*/
-		
 		//send to the views, the list of selected servers
 		//returns the updated json response of the server counters
 		function update_server_obj(){
-			//selected_servers_name_list = []
 			//js array with the list of selected servers
-	 	    //alert(JSON.stringify(selected_servers_name_list));
 			$.post('/mypy/', {
 					           csrfmiddlewaretoken: '{{ csrf_token }}',
 					          }, 
@@ -42,19 +49,10 @@
 		}
 		
 		function data_collection_loop() {
-			setTimeout(update_server_obj, 15000);
+			setTimeout(update_server_obj, 18000);
 		}
 		
 		data_collection_loop();
-
-		
-		function get_server_checklist() {
-			selected_servers_name_list = [];
-			$("input[type=checkbox]:checked").each(function() {
-			        selected_servers_name_list.push($(this).val());
-		        });
-		    return selected_servers_name_list;
-		}
 		
 		//setting the default monitor group to general_info for landing page
 		current_monitor = "general_info";
@@ -233,6 +231,37 @@
 		            $("#server_details").prepend(statements_counters);
 		            insert_data();
 		            break;
+		            
+		            case "replication":
+			        $(".monitor_group").remove();
+			        var replication_counters =   "<div class='monitor_group'>" +
+			                                        "<ul>" +
+			                                            "<li class='counters_list_css' id='running'>Slave running?</li>" +
+			                                            "<li class='counters_list_css' id='read_only'>Slave read only?</li>" +
+			                                            "<li class='counters_list_css' id='io_running'>Slave I/O running?</li>" +
+			                                            "<li class='counters_list_css' id='io_state'>Slave I/O state</li>" +
+			                                            "<li class='counters_list_css' id='slave_sql'>Slave SQL running</li>" +
+			                                            "<li class='counters_list_css' id='sbm'>Seconds behind master</li>" +
+			                                            "<li class='counters_list_css' id='skip'>Skip Errors in Slave?</li>" +
+			                                            "<li class='counters_list_css' id='err_no'>Last error number</li>" +
+			                                            "<li class='counters_list_css' id='err_msg'>Last error message</li>" +
+			                                            "<li class='counters_list_css' id='io_err'>Last I/O error</li>" +
+			                                            "<li class='counters_list_css' id='ntw_timeout'>Slave network timeout</li>" +
+			                                            "<li class='counters_list_css' id='trsc_count'>Slave retried transaction count</li>" +
+			                                            "<li class='counters_list_css' id='m_host'>Master host</li>" +
+			                                            "<li class='counters_list_css' id='m_port'>Master port</li>" +
+			                                            "<li class='counters_list_css' id='m_user'>Master user</li>" +
+			                                            "<li class='counters_list_css' id='mlog_file'>Master log file</li>" +
+			                                            "<li class='counters_list_css' id='mlog_read_pos'>Master log read position</li>" +
+			                                            "<li class='counters_list_css' id='rm_log'>Relay master log file</li>" +
+			                                            "<li class='counters_list_css' id='rm_log_pos'>Relay master log file position</li>" +
+			                                            "<li class='counters_list_css' id='rlog'>Relay log file</li>" +
+			                                            "<li class='counters_list_css' id='rlog_pos'>Relay log position</li>" +
+			                                        "</ul>" +
+			                                     "</div>";
+		            $("#server_details").prepend(replication_counters);
+		            insert_data();
+		            break;
          }
 		});
          
@@ -301,22 +330,6 @@
 			//checking is the server checkbox is checked and appending the serever details
 			if($this.is(':checked')){
 				var server_selection = $this.val();
-				//selected_servers_name_list = []
-				//$("input[type=checkbox]:checked").each(function() {
-					//selected_servers_name_list.push($(this).val());
-				//});
-				
-				//alert(selected_servers_name_list);
-				/*selected_servers_name_list = [];
-				for(var server_name in selected_servers_object) {
-					//alert(server_name);
-					if(selected_servers_name_list.indexOf(server_name) == -1) {
-						selected_servers_name_list.push(server_name);
-					}
-				}
-				if(selected_servers_name_list.indexOf(server_selection) == -1) {
-						selected_servers_name_list.push(server_selection);
-				}*/
 				
 				//alert(selected_servers_name_list);		
 				$.post('/mypy/', { //this data is passed to the views in django
@@ -394,9 +407,7 @@
         
         <input type="button" class="tab" value="Replication" id="replication" style="left: 88.2vw;" />
         
-        {% csrf_token %}
-        <input type="hidden" name="ajax_test" method="post" />
-        
+     
         {% if server_list %}
     
 	        <form action="/mypy/" method="post" id="server_list_form">
@@ -405,8 +416,8 @@
 	                {% for server in server_list %}
 	                
 	                    <li class="side_list_padding">
-	                        <input type="checkbox" name="selected_server_checkbox" value="{{server.mysql_server_name}}"/>
-	                            {{ server.mysql_server_name }}
+	                        <input type="checkbox" name="selected_server_checkbox" value="{{server.mysql_server_name}}" />
+	                            <span class="side_list_link">{{ server.mysql_server_name }}</span>	                        
 	                    </li>
 	                {% endfor %}
 	            </ul>
