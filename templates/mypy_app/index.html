@@ -9,18 +9,35 @@
 <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
 <script>
        $(document).ready(function(){
+		
+		$("#add_server").click(function() {
+			var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+            //alert("width: " + w + " Height: " + h);
+			window.open('/mypy/add_server/', 'Add Server', 'width=' + (w * 0.45) + ',height=' + (h * 0.65) + ',left=' + (w/3) + ',top=' + (h/6) + "'");
+		});
+		   
 		//display the edit server page with the selected server details 
 		$(".side_list_link").click(function(){
 			var name = ($(this).text());
 			var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
             var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
             //alert("width: " + w + " Height: " + h);
-            var width = w * 0.5;
-            var height = h * 0.88;
-			edit_server = window.open('/mypy/add_server/', 'Add Server', 'height= ' + (h * 0.88) + 
-			                           ', width= ' + (w * 0.5) + ', left= ' + w/3 + ', top=' + h/8 + "'");
+			edit_server = window.open('/mypy/add_server/', 'Add Server', 'width=' + (w * 0.45) + ',height=' + (h * 0.65) + ',left=' + (w/3) + ',top=' + (h/6) + "'");
 			$(edit_server).load(function(){
-				//alert("hello");
+				$.post('/mypy/add_server/', {
+					                          csrfmiddlewaretoken: '{{ csrf_token }}',
+					                          server_name: name,
+					                        },
+					    function(server_credentials){
+							server_details = JSON.parse(server_credentials);
+							edit_server.$("#id_mysql_server_name").val(server_details.mysql_server_name);
+							edit_server.$("#id_mysql_host").val(server_details.mysql_host);
+							edit_server.$("#id_mysql_port").val(server_details.mysql_port);
+							edit_server.$("#id_mysql_user").val(server_details.mysql_user);
+							edit_server.$("#id_mysql_password").val(server_details.mysql_password);
+						}
+				)
 				edit_server.$("#id_mysql_server_name").val(name);
 				edit_server.$("#id_mysql_host").val(name);
 				//edit_server.document.getElementById("id_mysql_server_name").("hello");
@@ -409,7 +426,7 @@
         
      
         {% if server_list %}
-    
+            
 	        <form action="/mypy/" method="post" id="server_list_form">
                 {% csrf_token %}
                 <ul id="side_list">
@@ -429,9 +446,9 @@
 	                
 	        </form>
 	        <!--Add server will call the adding_server view-->
-	        <form action="/mypy/add_server/" method="post" style="float: left;">
-	            {% csrf_token %}
-	            <input type="submit" value="Add Server" class="btn">
+	        <form style="float: left;">
+	        
+	            <input type="submit" value="Add Server" class="btn" id='add_server'>
             </form>
                 </span>
         {% endif %}

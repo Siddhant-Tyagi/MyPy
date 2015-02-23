@@ -15,13 +15,13 @@
 <body>
     {% block body_tag %}
         {% if server_list %}
-            <span>
+            <!--<span>
                 <ul style="position:fixed; top: 17vh; width: 12vw; height: 70vh; border: 0.25vw solid gray; 
                  overflow-y: auto; margin-left: 0.08vw; padding: 2.1vw;">
 	             {% for server in server_list %}
 	                 <li class="server_list_padding">{{ server.mysql_server_name }}</li>
 	             {% endfor %}
-                </ul>
+                </ul>-->
                 
         {% endif %}
 
@@ -44,10 +44,9 @@
 	        {% for field in form.visible_fields %}
 	            <span class="label">{{ field.label }}</span> {{ field }} </br></br>
 	        {% endfor %}
-
 	        <input type="submit" name="submit" value="Save details" class="btn" />
         </form>
-            </span>
+            
     {% endblock %}
 </body>
 </html>

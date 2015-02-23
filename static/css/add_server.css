@@ -1,47 +1,52 @@
 .input_form_css {
 	border: 0.25vw solid #c6c7cc;
 	border-radius: 0.5vw;
-	font: 1.6vh/1.6vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font: 2.5vh/2.5vw "Helvetica Neue", Helvetica, Arial, sans-serif;
 	overflow: hidden;
 	position: fixed;
-	top: 25vh;
+	top: 14vh;
 	float: left;
-	width: 40vw;
-	margin-left: 32vw;
+	width: 80vw;
+	height: 80vh;
+	margin-left: 8vw;
 }
 
 .label {
 	color: #395870;
 	display: block;
 	font-weight: bold;
-	margin-bottom: 1vh;
+	margin-bottom: 1.6vh;
 	margin-left: 1.3vw;
 }
 .input {
 	background: #fff;
 	margin: 1vh;
 	border: 0.23vh solid #c6c7cc;
-	font: 1.8vh/1.8vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font: 2.5vh/2.5vw "Helvetica Neue", Helvetica, Arial, sans-serif;
 	box-shadow: inset 0 0.25vw 0.25vh rgba(0, 0, 0, .1);
 	color: #636466;
 	padding: 0.5vh;
 	margin-top: 0.1vh;
-	margin-bottom: 1.6vh;
+	margin-bottom: 4vh;
 	margin-left: 1.3vw;
 	width: 90%;
 }
 
 .btn {
 	display: inline-block;
+	position: fixed;
+	line-height: 1vh;
 	background: linear-gradient(#49708f, #293f50);
-	font: 1.5vw/1.5vh "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font: 2.5vh/2.5vw "Helvetica Neue", Helvetica, Arial, sans-serif;
 	border: 0;
 	color: #fff;
-	float: right;
+	right: 10.6vw;
+	bottom: 5.92vh;
 	cursor: pointer;
-	width: 14vw;
-	height: 4vh;
+	width: 22vw;
+	height: 6vh;
 	padding: 0.5vw 1.5vh;
+	
 }
 
 .server_list_padding  {

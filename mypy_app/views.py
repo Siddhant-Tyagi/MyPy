@@ -19,6 +19,15 @@ def adding_server(request):
     context = RequestContext(request)
     if request.method == 'POST':
         form = Add_Server_Form(request.POST)
+        
+        #fires the edit server window
+        if request.is_ajax():
+            server_name = request.POST.get('server_name')
+            print server_name
+            print request.POST.get('csrfmiddlewaretoken')
+            obj = add_server.objects.filter(mysql_server_name=server_name)[0]
+            server_details = {key: value for (key,value) in vars(obj).iteritems() if 'mysql' in key}                  
+            return HttpResponse(json.dumps(server_details))
  
         if form.is_valid():
             #saving the server details in sqlite db
