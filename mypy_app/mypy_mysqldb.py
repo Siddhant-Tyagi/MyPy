@@ -19,21 +19,17 @@ def connect_to_server(connection_detail_object):
                    host = str(connection_detail_object.mysql_host),
                    port = int(connection_detail_object.mysql_port),
                    user = str(connection_detail_object.mysql_user),
-                   passwd = str(connection_detail_object.mysql_password)
+                   passwd = str(connection_detail_object.mysql_password),
+                   connect_timeout = 5
                 )
     except my.Error as connection_error:
         #print "coudnt connect"
         return (str(connection_error.args[0]) + " " + str(connection_error.args[1])), None
 
-    return ("Connection to " + connection_detail_object.mysql_server_name +  " successful.!!"), connection_obj
+    return ("Connection to " + connection_detail_object.mysql_server_name +  " successful!!"), connection_obj
 
 
 def get_mysql_data(current_server_object, server_info_queue):
-    #start_time = time.time()
-    #global connection_obj
-    #print "inside get_mysql_data method"
-    #print current_server_object
-    #print str(current_server_object.mysql_server_name) + "  " + str(current_server_object.mysql_host)
     connection_msg, connection_obj = connect_to_server(current_server_object)
     #print "hello hello"
     #print connection_msg

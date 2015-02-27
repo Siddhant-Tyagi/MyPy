@@ -10,6 +10,21 @@
 <script>
        $(document).ready(function(){
 		
+		/*initializing js object of all the selected servers,
+		later to be used to maintain the couters object for each server
+		The structure of the object is as follows:
+		selected_servers_object = {
+		                            server_name: {
+		                                           monitor_group: {
+		                                                            counter_id: data,
+		                                                           },
+		                                          },
+		                           }                  
+		*/		 
+		selected_servers_object = {};
+		selected_servers_name_list = [];
+		
+		//fires the add server pop window when add server button is clicked
 		$("#add_server").click(function() {
 			var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
             var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
@@ -17,20 +32,24 @@
 			window.open('/mypy/add_server/', 'Add Server', 'width=' + (w * 0.45) + ',height=' + (h * 0.65) + ',left=' + (w/3) + ',top=' + (h/6) + "'");
 		});
 		   
-		//display the edit server page with the selected server details 
+		//fires the edit server page with the selected server details 
 		$(".side_list_link").click(function(){
 			var name = ($(this).text());
 			var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
             var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
             //alert("width: " + w + " Height: " + h);
-			edit_server = window.open('/mypy/add_server/', 'Add Server', 'width=' + (w * 0.45) + ',height=' + (h * 0.65) + ',left=' + (w/3) + ',top=' + (h/6) + "'");
+			edit_server = window.open('/mypy/edit_server/', 'Edit Server', 'width=' + (w * 0.45) + ',height=' + (h * 0.65) + ',left=' + (w/3) + ',top=' + (h/6) + "'");
+			
+			//ajax post request to django views with the current server name
+			//with this server name it returns all the field values associated with the server(host, port, user, passwd)
 			$(edit_server).load(function(){
-				$.post('/mypy/add_server/', {
+				$.post('/mypy/edit_server/', {
 					                          csrfmiddlewaretoken: '{{ csrf_token }}',
 					                          server_name: name,
 					                        },
 					    function(server_credentials){
 							server_details = JSON.parse(server_credentials);
+							//puts the data into their respective fields
 							edit_server.$("#id_mysql_server_name").val(server_details.mysql_server_name);
 							edit_server.$("#id_mysql_host").val(server_details.mysql_host);
 							edit_server.$("#id_mysql_port").val(server_details.mysql_port);
@@ -38,17 +57,14 @@
 							edit_server.$("#id_mysql_password").val(server_details.mysql_password);
 						}
 				)
-				edit_server.$("#id_mysql_server_name").val(name);
-				edit_server.$("#id_mysql_host").val(name);
-				//edit_server.document.getElementById("id_mysql_server_name").("hello");
 				
-			});
-		});
-		
-		/*initializing js object of all the selected servers,
-		later to be used to maintain the couters object for each server*/		 
-		selected_servers_object = {};
-		selected_servers_name_list = [];
+			   //setting the original server name to be passed as hidden form field
+			   //this is required for the django view to fetch the associated server object from the models(db)
+			   //server name is set to unique in the models	 
+			   $(edit_server.document).contents().find("#id_original_server_name").val(name);
+		    });
+		  });
+		  
 		
 		//send to the views, the list of selected servers
 		//returns the updated json response of the server counters
@@ -65,15 +81,16 @@
 			data_collection_loop();
 		}
 		
+		//specifies the data collection interval
 		function data_collection_loop() {
-			setTimeout(update_server_obj, 18000);
+			setTimeout(update_server_obj, 30000);
 		}
 		
+		//fires the data collection event at window load
 		data_collection_loop();
 		
 		//setting the default monitor group to general_info for landing page
 		current_monitor = "general_info";
-		//$("#" + current_monitor).attr('disabled', 'disabled'); 
 		var general_info_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
 			                                            "<li class='counters_list_css' id='available'>Available?</li>" +
@@ -93,7 +110,6 @@
 				return false;
 			}
 			current_monitor = $(this).attr("id");
-			//alert(current_monitor);
 			switch(current_monitor){
 			    case "general_info":
 			        $(".monitor_group").remove();
@@ -307,11 +323,13 @@
 			for(var server_name in selected_servers_object) {
 				var index = 0;
 				var diff = 0;
-				//escaping the server_name of the sapces, to be used as the id 
+				//escaping the server_name of the sapces, to be used as the id
+				//id shouldn't contain any space whereas the server name can
 				var escaped_server_name = escape_server_name(server_name);
 				var server_counters_length = parseInt($("#" + escaped_server_name + " li").length);
-			    
-				//alert(escaped_server_name);
+                
+                //while changing tabs, if the number of counters present in the new monitor group is less than the previous one then,
+                //remove the list entries from the server counters list
 				if(total_counters < server_counters_length) {
 					//alert("inside");
 					//diff = total_counters - parseInt($("#" + server_name + " li").length);
@@ -322,22 +340,31 @@
 						
 				}
 				
+				//if the monitor group contains greater number of counters than the previous one then add new list entries
 				if(total_counters > server_counters_length) {
 					//alert("inside second");
 					for(var index=server_counters_length; index<total_counters; index++) {
 						$("#" + escaped_server_name + " ul").append("<li class='counters_list_css'></li>");
 					}
 				}
+				
+				//inserting data into server counters list for the present monitor group
 				for(index=0; index<total_counters; index++) {
 					//alert("inside nest");
 					var current_list_element = $(".monitor_group li:eq(" + index + ")");
+					
+					/* selected_servers_object[server_name].current_monitor["current_list_element_id"] 
+					   This fetches the data from the global selected_servers_object */
 					var current_counter_value = eval("selected_servers_object[server_name]." + current_monitor + "['" + 
 					                                  current_list_element.attr('id') + "']");
-					//alert(current_counter_value);
+					
+					//puts the fetched data into its correct position;
 					$("#" + escaped_server_name + " li:eq(" + index + ")").text(current_counter_value);
 				}
 			}
 		}
+		
+		
 		//this selector describes which servers are being currently selected
 		//more than one server can be selected at a time
 		//it sends a ajax post request to the index view and returns the json data
@@ -438,6 +465,7 @@
 	                    </li>
 	                {% endfor %}
 	            </ul>
+	     {% endif %}
 	            <!--Delete server will call the index view with the checkbox values as the POST request-->
 	            <br>
 	            <span>
@@ -451,7 +479,8 @@
 	            <input type="submit" value="Add Server" class="btn" id='add_server'>
             </form>
                 </span>
-        {% endif %}
+        <div>Hello</div>
+        
         <div id="server_details"></div>
         
     {% endblock %}

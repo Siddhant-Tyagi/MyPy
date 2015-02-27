@@ -12,10 +12,11 @@ class Add_Server_Form(forms.ModelForm):
             max_length=128, label="MySQL Username ")
     mysql_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input'}), \
             label="MySQL Password ", required=False)
+    original_server_name = forms.CharField(widget=forms.HiddenInput(), initial="default")
 
     class Meta:
         model = add_server
         """widget = {
                 'mysql_password': forms.PasswordInput(),
                     }"""
-        fields = ('mysql_server_name', 'mysql_host', 'mysql_port', 'mysql_user', 'mysql_password')
+        fields = ('mysql_server_name', 'mysql_host', 'mysql_port', 'mysql_user', 'mysql_password', 'original_server_name')

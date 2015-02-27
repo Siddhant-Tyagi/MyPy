@@ -16,24 +16,20 @@ from mypy_app.mypy_mysqldb import get_mysql_data
 
 
 def adding_server(request):
-    context = RequestContext(request)
+    context = RequestContext(request)   
+    
     if request.method == 'POST':
         form = Add_Server_Form(request.POST)
         
-        #fires the edit server window
-        if request.is_ajax():
-            server_name = request.POST.get('server_name')
-            print server_name
-            print request.POST.get('csrfmiddlewaretoken')
-            obj = add_server.objects.filter(mysql_server_name=server_name)[0]
-            server_details = {key: value for (key,value) in vars(obj).iteritems() if 'mysql' in key}                  
-            return HttpResponse(json.dumps(server_details))
- 
+        #when the form is submitted
         if form.is_valid():
+            print "inside form"
             #saving the server details in sqlite db
+            print form.data['original_server_name']
             form.save(commit=True)
             #current_object contains the last entry from the sqlite db which is the current server object
             current_object = add_server.objects.all()[len(add_server.objects.all())-1]
+            print current_object
             #calling the connect_to_server method from mypy_mysqldb
             #takes in the current server object as a parameter
             #attempts to connect to the MySQL server and returns the response message
@@ -48,8 +44,11 @@ def adding_server(request):
                         'form': form, 
                         'add_server_info': adding_server_msg,
                         'server_list': add_server.objects.all()\
-                        }, context)
+                      }, context)
+        
+        #if form is not valid
         else:
+            print "inside form"
             #str(form.errors)
             adding_server_msg = ""
             #if the forms.error returns an error about the existence of the server name,
@@ -61,7 +60,8 @@ def adding_server(request):
     else:
         form = Add_Server_Form()
         adding_server_msg = ""
-
+    
+    print "inside get"
     context_dict = {
             'form': form,
             'add_server_info': adding_server_msg,
@@ -69,8 +69,94 @@ def adding_server(request):
             }
     return render_to_response('mypy_app/add_server.html', context_dict , context)
 
+#original_server_name = ""
 
-#servers_object = {}
+def edit_server(request):
+    context = RequestContext(request)
+           
+    #fires the edit server window
+    if request.is_ajax():
+        #print "inside ajax"
+        server_name = request.POST.get('server_name')
+        #print server_name
+        # request.POST.get('csrfmiddlewaretoken')
+        obj = add_server.objects.filter(mysql_server_name=server_name)[0]
+        server_details = {key: value for (key,value) in vars(obj).iteritems() if 'mysql' in key}                  
+        return HttpResponse(json.dumps(server_details))
+    
+        
+    if request.method == 'POST':
+        form = Add_Server_Form(request.POST)
+        #print form.data['original_server_name']
+        #print request.POST.get('original_server_name')
+        #when the form is submitted and is valid i.e. server name is different than the one present in the db    
+        if form.is_valid():
+            #print "inside if"
+            #server_name = request.POST.get('original_server_name')
+            #print "inside : "  + s1
+            server_obj = add_server.objects.get(mysql_server_name=form.data['original_server_name'])
+            for current_field in vars(server_obj):
+                try:
+                    server_obj.__dict__[current_field] = form.data[current_field]
+                except:
+                    pass
+            #print server_obj
+            server_obj.save()
+            #saving the server details in sqlite db
+            #form.save(commit=True)
+            #current_object contains the last entry from the sqlite db which is the current server object
+            current_object = add_server.objects.all()[len(add_server.objects.all())-1]
+            #calling the connect_to_server method from mypy_mysqldb
+            #takes in the current server object as a parameter
+            #attempts to connect to the MySQL server and returns the response message
+            adding_server_msg, connection_obj = connect_to_server(current_object)
+            if connection_obj:
+                connection_obj.close()
+            #if the connection to MySQL server fails, delete this entry from the sqlite db
+            #if "successful" not in adding_server_msg:
+            #current_object.delete()
+            return render_to_response('mypy_app/edit_server.html', 
+                      {
+                        'form': form, 
+                        'add_server_info': adding_server_msg,
+                      }, context)
+        
+        #if form is not valid(when the server name is the same as earlier)
+        else:
+            #print "inside else"
+            server_name =  form.data['mysql_server_name']
+            #fetching the respective server object from models
+            server_obj = add_server.objects.get(mysql_server_name=server_name)
+            #updating the details of each field in the server object
+            #the form.data dictionary doesn't contain any entry of the server name
+            for current_field in vars(server_obj):
+                try:
+                    server_obj.__dict__[current_field] = form.data[current_field]
+                except:
+                    pass
+            #saving the updated models object to the database
+            server_obj.save()
+            adding_server_msg, connection_obj = connect_to_server(server_obj)
+            if connection_obj:
+                connection_obj.close()
+            return render_to_response('mypy_app/edit_server.html', 
+                      {
+                        'form': form, 
+                        'add_server_info': adding_server_msg,
+                      }, context)
+
+    #if request.method is not post, render the form again
+    else:
+        form = Add_Server_Form()
+        adding_server_msg = ""
+    
+    context_dict = {
+            'form': form,
+            'add_server_info': adding_server_msg,
+            }
+    return render_to_response('mypy_app/edit_server.html', context_dict , context)
+        
+
 
 def index(request):
     servers_object = {}
