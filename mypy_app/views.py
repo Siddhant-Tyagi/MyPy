@@ -382,16 +382,21 @@ def build_server_details_dict(global_var_dict, global_status_dict, slave_status_
 
     connection_history['successful'] = str(int(global_status_dict['Connections']) - 
                                                   int(global_status_dict['Aborted_connects']))
-    
-    connection_history['percentage_of_max_allowed_reached'] = str("%.2f"
+    try:
+        connection_history['percentage_of_max_allowed_reached'] = str("%.2f"
             %(float(global_status_dict['Max_used_connections']) / 
               float(global_var_dict['max_connections']) * 100)) + " %"
+    except:
+        pass
     
     connection_history['refused'] = global_status_dict['Aborted_connects']
 
-    connection_history['percentage_of_refused_connections'] = str("%.2f"
+    try:
+        connection_history['percentage_of_refused_connections'] = str("%.2f"
             %(float(global_status_dict['Aborted_connects']) /
               float(global_status_dict['Connections']) * 100)) + " %"
+    except:
+        pass
 
     connection_history['terminated_abruptly'] = global_status_dict['Aborted_clients']
     connection_history['bytes_received'] = convert_memory(int(global_status_dict['Bytes_received']))
@@ -403,10 +408,13 @@ def build_server_details_dict(global_var_dict, global_status_dict, slave_status_
     current_connections['max_allowed'] = global_var_dict['max_connections']
     current_connections['open_connections'] = global_status_dict['Threads_connected']
 
-    current_connections['connection_usage'] = str("%.2f"
+    try:
+        current_connections['connection_usage'] = str("%.2f"
             %(float(global_status_dict['Threads_connected']) /
               float(global_var_dict['max_connections']) * 100)) + " %"
-
+    except:
+        pass
+    
     current_connections['running_threads'] = global_status_dict['Threads_running']
     current_connections['concurrent_connections'] = global_status_dict['Max_used_connections']
     current_connections['idle_timeout'] = convert_time(int(global_var_dict['wait_timeout']))
@@ -423,22 +431,30 @@ def build_server_details_dict(global_var_dict, global_status_dict, slave_status_
     #innodb free memory
     innodb_pages_data = int(global_status_dict['Innodb_buffer_pool_pages_data'])
     innodb_pages_free = int(global_status_dict['Innodb_buffer_pool_pages_free'])
-        
-    page_size = float(global_var_dict['innodb_buffer_pool_size'])/float(global_status_dict['Innodb_buffer_pool_pages_total'])
-    if innodb_pages_data>0:
-        innodb_cache['free_memory'] = convert_memory(page_size*innodb_pages_free)
-
+    try:    
+        page_size = float(global_var_dict['innodb_buffer_pool_size'])/float(global_status_dict['Innodb_buffer_pool_pages_total'])
+        if innodb_pages_data>0:
+            innodb_cache['free_memory'] = convert_memory(page_size*innodb_pages_free)
+    except:
+        pass
+    
     innodb_cache['cache_blocks'] = convert_memory(int(global_status_dict['Innodb_buffer_pool_read_requests']))
     innodb_cache['cache_misses'] = global_status_dict['Innodb_buffer_pool_reads']
     
-    innodb_cache['cache_hit_ratio'] = str("%.2f"
+    try:
+        innodb_cache['cache_hit_ratio'] = str("%.2f"
            %(float(global_status_dict['Innodb_buffer_pool_reads']) /
              float(global_status_dict['Innodb_buffer_pool_read_requests']) * 100)) + " %"
-
-    innodb_cache['cache_write_wait'] = str("%.2f"
+    except:
+        pass
+    
+    try:
+        innodb_cache['cache_write_wait'] = str("%.2f"
             %(float(global_status_dict['Innodb_buffer_pool_wait_free']) /
               float(global_status_dict['Innodb_buffer_pool_write_requests'])))
-
+    except:
+        pass
+    
     innodb_cache['adtl_pool_size'] = convert_memory(int(global_var_dict['innodb_additional_mem_pool_size']))
     innodb_cache['free_page_waits'] = global_status_dict['Innodb_buffer_pool_wait_free']
     innodb_cache['buffer_max_size'] = global_var_dict['innodb_change_buffer_max_size']
@@ -450,13 +466,16 @@ def build_server_details_dict(global_var_dict, global_status_dict, slave_status_
     threads['threads_created'] = global_status_dict['Threads_created']
     
     #cache hit rate
-    created = int(threads['threads_created'])
-    conns = int(global_status_dict['Connections'])
-    if created > conns:
-        threads['cache_hit_rate'] = '100'
-    else:
-        threads['cache_hit_rate'] = str((1-(created/conns)) * 100) + " %"
-
+    try:
+        created = int(threads['threads_created'])
+        conns = int(global_status_dict['Connections'])
+        if created > conns:
+            threads['cache_hit_rate'] = '100'
+        else:
+            threads['cache_hit_rate'] = str((1-(created/conns)) * 100) + " %"
+    except:
+        pass
+    
     threads['slow_launch_time'] = global_var_dict['slow_launch_time']
     threads['slow_launch_threads'] = global_status_dict['Slow_launch_threads']
 
@@ -472,10 +491,13 @@ def build_server_details_dict(global_var_dict, global_status_dict, slave_status_
     query_cache['total_blocks'] = global_status_dict['Qcache_total_blocks']
     query_cache['free_blocks'] = global_status_dict['Qcache_free_blocks']
 
-    query_cache['fragmentation'] = str("%.2f"
+    try:
+        query_cache['fragmentation'] = str("%.2f"
             %(float(global_status_dict['Qcache_free_blocks']) /
               float(ceil((float(global_status_dict['Qcache_total_blocks'])) /2 )) * 100 )) + " %"
-   
+    except:
+        pass
+    
     query_cache['query_cache'] = global_status_dict['Qcache_queries_in_cache']
     query_cache['query_not_cached'] = global_status_dict['Qcache_not_cached']
     query_cache['cache_misses'] = global_status_dict['Qcache_inserts']
