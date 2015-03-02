@@ -1,7 +1,6 @@
 import MySQLdb as my
 import time
-
-#connection_obj = my.connect
+#from twisted.internet.main import CONNECTION_DONE
 
 def connect_to_server(connection_detail_object):
     """This connection_detail_object has the following attributes 
@@ -30,9 +29,9 @@ def connect_to_server(connection_detail_object):
 
 
 def get_mysql_data(current_server_object, server_info_queue):
-    connection_msg, connection_obj = connect_to_server(current_server_object)
     #print "hello hello"
     #print connection_msg
+    connection_msg, connection_obj = connect_to_server(current_server_object)
     if connection_obj:
         #print "connection_obj is not null"
         #print str(type(connection_obj))
