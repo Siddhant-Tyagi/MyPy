@@ -9,6 +9,23 @@
 <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
 <script>
        $(document).ready(function(){
+		//getting the data collection interval
+		//default is 10 seconds
+		data_interval = 10;
+		$("#data_collection").click(function() {
+			data_interval = prompt("Enter the data collection interval in seconds. Value should be greater than or equals to 5.", 
+			                        data_interval + "");
+			if (!isNaN(parseInt(data_interval)) && isFinite(data_interval) && parseInt(data_interval) >= 5) {
+				data_interval = parseInt(data_interval);
+				clearTimeout(data_collection_cycle);
+				data_collection_loop();
+			}
+			
+			else if ((isNaN(parseInt(data_interval)) || !isFinite(data_interval) || parseInt(data_interval) <= 5)){
+				//data_interval = 10;
+				alert("Please enter valid number greater than or equals to 5 seconds");
+			}
+		});
 		
 		/*initializing js object of all the selected servers,
 		later to be used to maintain the couters object for each server
@@ -69,7 +86,6 @@
 		//send to the views, the list of selected servers
 		//returns the updated json response of the server counters
 		function update_server_obj(){
-			//js array with the list of selected servers
 			$.post('/mypy/', {
 					           csrfmiddlewaretoken: '{{ csrf_token }}',
 					          }, 
@@ -83,7 +99,7 @@
 		
 		//specifies the data collection interval
 		function data_collection_loop() {
-			setTimeout(update_server_obj, 10000);
+			data_collection_cycle = setTimeout(update_server_obj, (data_interval * 1000));
 		}
 		
 		//fires the data collection event at window load
@@ -431,6 +447,11 @@
 
 <body>
     {% block body_tag %}
+        <input type="button" value="Set Data Collection" id="data_collection" style='left: 2.4vw; width: 12vw; 
+               display: inline-block;position: fixed; top: 16vh; background: linear-gradient(#49708f, #293f50);
+	           font: 1.4vh/1.4vw "Helvetica Neue", Helvetica, Arial, sans-serif; border: 0; line-height: 1vh; color: #fff;
+	           cursor: pointer; height: 3.5vh; padding: 0.5vw 1vh;'/>
+    
         <input type="button" class="tab" value="General Info" id="general_info" />
         
         <input type="button" class="tab" value="Connection History" id="connection_history" 
@@ -479,7 +500,6 @@
 	            <input type="submit" value="Add Server" class="btn" id='add_server'>
             </form>
                 </span>
-        <div>Hello</div>
         
         <div id="server_details"></div>
         
