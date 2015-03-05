@@ -1,0 +1,147 @@
+.tab  {
+	display: inline-block;
+	position: fixed;
+	top: 16vh;
+	left: 16.7vw;
+	background: linear-gradient(#49708f, #293f50);
+	font: 1.4vh/1.4vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+	border: 0;
+	border-top-left-radius: 1.5vw;
+	border-top-right-radius: 1.5vw;
+	color: #fff;
+	cursor: pointer;
+	height: 3.5vh;
+	padding: 0.5vw 1vh;
+	width: 8.3vw;
+	font-weight: bold;
+	line-height: 1vh;
+	
+}
+
+
+.btn {
+	display: inline-block;
+	position: fixed;
+	top: 90vh;
+	background: linear-gradient(#49708f, #293f50);
+	font: 1.5vh/1.5vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+	border: 0;
+	color: #fff;
+	cursor: pointer;
+	height: 3.5vh;
+	width: 9.4vw;
+	padding: 0.5vw 1vh;
+	margin: 0.26vw;
+	left: 0.2vw;
+	line-height: 1vh;
+}
+
+     
+#side_list
+{
+    list-style-type: none;
+    top: 19vh;
+    position: fixed;
+    margin-left: 0.05vw;
+    border: 0.25vw solid gray;
+    width: 15vw;
+    height: 67vh;
+    padding: 0.2vw;
+    overflow-y: scroll;
+}
+
+#server_details {
+    display: inline-flex;
+    justify-content: flex-start;
+    position: fixed;
+    border: 2px solid black;
+    white-space: nowrap;
+    top: 20vh; 	
+    left: 16.9vw;
+    width: 82vw;
+    height: 68.7vh;
+    overflow-x: scroll;
+
+}
+
+.server_class  {
+    display: inline-block;
+    position: relative;
+    flex: none;
+    border: 1px solid white;
+    margin-left: 2.5vw;
+    left: -0.5vw;
+    
+}
+
+.server_heading  {
+    font: 2.1vh/2.1vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #fff;
+    text-align: center;
+    padding: 0.6vh;
+    width: 18vw;
+    height: 1.8vh;
+    background: #6D8DA5;
+    line-height: 2vh;
+    font-weight: bold;
+    
+}
+
+
+.server_counters_list  {
+    display: inline-block;
+    position: relative;
+    top: 0.5vh;
+    width: 17vw;
+    white-space:normal;
+    font: 1.75vh/1.75vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-align: center;
+    padding: 0.5vh;
+   
+}
+
+
+hr {
+     position: relative;
+     border: 0.2vh solid #49708f;
+     top: 1.2vh;
+     width: 81.2vw;
+     float: right;
+     margin-right: 2vw;
+     
+}
+
+.side_list_padding  {
+    padding: 1.5%;
+}
+
+.monitor_group  {
+    display: inline-block;
+    position: relative;
+    flex: none;
+    height: 15vh;
+    border: 1px solild white;
+    top: 4vh;
+    left: -1.5vw;
+    width: 21vw;
+    white-space: nowrap;
+    font: 1.4vh/1.4vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+}
+
+.counters_list_css  {
+    list-style-type: none;
+    border: 1px solid green;
+    padding: 1.6%;
+    font: 1.4vh/1.4vw "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 4vh;
+    
+}
+
+.side_list_link  {
+    cursor: pointer;
+}
+
+.side_list_link:hover {
+	text-decoration: underline;
+}

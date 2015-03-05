@@ -1,0 +1,26 @@
+<html>
+<head>
+<script src="jquery-1.11.2.js"></script>
+<script src="jquery-ui.js"></script>
+</head>
+<html>
+<script>
+$(function() {
+            alert("hello");
+            $( "#dialog-1" ).html("Aborted_connects/Connections").dialog({
+               autoOpen: false,
+                modal: false,
+                resizable: false,
+            });
+    $(".ui-dialog-titlebar").hide();
+            $( "#opener" ).mouseenter(function() {
+               $("#dialog-1").dialog( "open" );
+            }).mouseleave(function() {
+                $("#dialog-1").dialog( "close" );
+         });
+});
+</script>
+<div id="dialog-1"></div>
+      <button id="opener">Open Dialog</button>
+</html>
+

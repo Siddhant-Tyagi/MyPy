@@ -7,6 +7,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
 <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
+<script src="{% static 'js/jquery-ui.js' %}"></script>
 <script>
        $(document).ready(function(){
 		//getting the data collection interval
@@ -26,6 +27,8 @@
 				alert("Please enter valid number greater than or equals to 5 seconds");
 			}
 		});
+		
+		
 		
 		/*initializing js object of all the selected servers,
 		later to be used to maintain the couters object for each server
@@ -313,7 +316,55 @@
 		            break;
          }
 		});
+        
+        formula_dict = {
+			             'available' : 'MySQL server running or not',
+			             'version' : 'version',
+			           }
+        //event to display the formula of a counter when mouse is hovered over it 
+        $(document).on('mouseover', '.counters_list_css', function() {
+				//alert($(this).attr('id'));
+				var p = $(this).position();
+			    
+			    $("#formula").html(formula_dict[$(this).attr('id')]).dialog({
+					minHeight: 'auto',
+					//minWidth: 'auto',
+					modal: true,
+					resizable: false,
+					autoOpen: false,
+					show: "blind",
+                    hide: "explode",
+				});
+				
+				$(".ui-dialog-titlebar").hide();
+				
+				$("#formula").dialog("open");
+				
+				$(".monitor_group").mousemove(function(e) {
+					$("#formula").dialog('widget').position({ my: 'left+3 bottom-3', of: e });
+				 });
+				 
+				 /*$('.monitor_group').mousemove(function (e) {
+					$("#formula").dialog("option", { position: [e.pageX+5, e.pageY+5] });
+				 });*/
+				
+				
+				
+				/*$("#" + $(this).attr('id')).mousemove(function (e) {
+					$("<div>" + $(this).attr('id') + "</div>").dialog({position: [e.pageX + 115, e.pageY + 5]});
+					//alert(e.pageX);
+				});*/
+				
+				/*$("#" + $(this).attr('id')).bind('mouseleave', function() {
+					$("#formula").dialog("close");
+				});*/
+				
+        
+	    });
+	    
+	    
          
+        
         //function for escaping server_name of white spaces, to be used as id
         function escape_server_name(server_name) {
 			var escaped_server_name = "";
@@ -437,6 +488,10 @@
 		});
 			
 	});
+	
+	
+	
+	
 		
 </script>
 <h1>MyPy</h1>
@@ -447,6 +502,7 @@
 
 <body>
     {% block body_tag %}
+        <div id="formula"></div>
         <input type="button" value="Set Data Collection" id="data_collection" style='left: 2.4vw; width: 12vw; 
                display: inline-block;position: fixed; top: 16vh; background: linear-gradient(#49708f, #293f50);
 	           font: 1.4vh/1.4vw "Helvetica Neue", Helvetica, Arial, sans-serif; border: 0; line-height: 1vh; color: #fff;
@@ -504,6 +560,7 @@
         <div id="server_details"></div>
         
     {% endblock %}
+        
 </body>
 
 </html>
