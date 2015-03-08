@@ -8,23 +8,27 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
 <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
 <script src="{% static 'js/jquery-ui.js' %}"></script>
+<script src="{% static 'js/jquery.cookie.js' %}"></script>
 <script>
        $(document).ready(function(){
 		//getting the data collection interval
 		//default is 10 seconds
 		data_interval = 10;
-		$("#data_collection").click(function() {
-			data_interval = prompt("Enter the data collection interval in seconds. Value should be greater than or equals to 5.", 
+		$("#data_collection").click(function user_input() {
+			var data_interval_input = prompt("Enter the data collection interval in seconds. Value should be greater than or equals to 5.", 
 			                        data_interval + "");
-			if (!isNaN(parseInt(data_interval)) && isFinite(data_interval) && parseInt(data_interval) >= 5) {
-				data_interval = parseInt(data_interval);
+			if (!isNaN(parseInt(data_interval_input)) && isFinite(data_interval_input) && parseInt(data_interval_input) >= 5) {
+				data_interval = parseInt(data_interval_input);
 				clearTimeout(data_collection_cycle);
 				data_collection_loop();
+				alert("Data collection successfully changed to " + data_interval + " seconds");
 			}
 			
-			else if ((isNaN(parseInt(data_interval)) || !isFinite(data_interval) || parseInt(data_interval) <= 5)){
-				//data_interval = 10;
-				alert("Please enter valid number greater than or equals to 5 seconds");
+			else if (data_interval_input){
+				if ((isNaN(parseInt(data_interval_input))) || !isFinite(data_interval_input) || parseInt(data_interval_input) <= 5) {
+					alert("Please enter valid number greater than or equals to 5 seconds");
+					user_input();
+				}
 			}
 		});
 		
@@ -49,7 +53,7 @@
 			var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
             var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
             //alert("width: " + w + " Height: " + h);
-			window.open('/mypy/add_server/', 'Add Server', 'width=' + (w * 0.45) + ',height=' + (h * 0.65) + ',left=' + (w/3) + ',top=' + (h/6) + "'");
+			window.open('/mypy/add_server/', 'Add Server', 'width=' + (w * 0.45) + ',height=' + (h * 0.80) + ',left=' + (w/3) + ',top=' + (h/6) + "'");
 		});
 		   
 		//fires the edit server page with the selected server details 
@@ -58,7 +62,7 @@
 			var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
             var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
             //alert("width: " + w + " Height: " + h);
-			edit_server = window.open('/mypy/edit_server/', 'Edit Server', 'width=' + (w * 0.45) + ',height=' + (h * 0.65) + ',left=' + (w/3) + ',top=' + (h/6) + "'");
+			edit_server = window.open('/mypy/edit_server/', 'Edit Server', 'width=' + (w * 0.45) + ',height=' + (h * 0.80) + ',left=' + (w/3) + ',top=' + (h/6) + "'");
 			
 			//ajax post request to django views with the current server name
 			//with this server name it returns all the field values associated with the server(host, port, user, passwd)
@@ -84,7 +88,7 @@
 			   $(edit_server.document).contents().find("#id_original_server_name").val(name);
 		    });
 		  });
-		  
+		
 		
 		//send to the views, the list of selected servers
 		//returns the updated json response of the server counters
@@ -100,6 +104,7 @@
 			data_collection_loop();
 		}
 		
+		
 		//specifies the data collection interval
 		function data_collection_loop() {
 			data_collection_cycle = setTimeout(update_server_obj, (data_interval * 1000));
@@ -108,20 +113,39 @@
 		//fires the data collection event at window load
 		data_collection_loop();
 		
+		
 		//setting the default monitor group to general_info for landing page
 		current_monitor = "general_info";
-		var general_info_counters = "<div class='monitor_group'>" +
+		general_info_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li class='counters_list_css' id='available'>Available?</li>" +
-			                                            "<li class='counters_list_css' id='version'>Version</li>" +
-			                                            "<li class='counters_list_css' id='running_for'>Running for</li>" +
-			                                            "<li class='counters_list_css' id='default_storage_engine'>Default storage engine</li>" +
-			                                            "<li class='counters_list_css' id='innodb_version'>InnoDB version</li>" +
-			                                            "<li class='counters_list_css' id='performance_schema'>Performance schema</li>" +
-			                                            "<li class='counters_list_css' id='uptime_since_flush_status'>Uptime since FLUSH STATUS</li>" +
+			                                            "<li class='monitor_group_css' id='available' formula='MySQL server running or not'>Available?</li>" +
+			                                            "<li class='monitor_group_css' id='version' formula='version'>Version</li>" +
+			                                            "<li class='monitor_group_css' id='running_for' formula='Uptime'>Running for</li>" +
+			                                            "<li class='monitor_group_css' id='default_storage_engine' formula='default_storage_engine'>Default storage engine</li>" +
+			                                            "<li class='monitor_group_css' id='innodb_version' formula='innodb_version'>InnoDB version</li>" +
+			                                            "<li class='monitor_group_css' id='performance_schema' formula='performance_schema'>Performance schema</li>" +
+			                                            "<li class='monitor_group_css' id='uptime_since_flush_status' formula='Uptime_since_flush_status'>Uptime since FLUSH STATUS</li>" +
 			                                        "</ul>" +
-			                                    "</div>";
+			                    "</div>";
 		$("#server_details").prepend(general_info_counters);
+		
+		//preserving the state of the checkboxes using cookies
+		$("input[type=checkbox]").each(function() {
+			//alert($(this).attr('value'));
+			var checkbox_cookie = $.cookie($(this).attr('value'));
+			if(checkbox_cookie && checkbox_cookie == "true") {
+				$(this).prop('checked', checkbox_cookie);
+			}
+		});		
+			
+		
+		$("input[type=checkbox]").change(function() {
+			$.cookie($(this).attr('value'), $(this).prop('checked'), {
+				path: '/mypy/',
+				expires: 10,
+			});
+		});
+		
 		//this selector describes which monitor has been selected currently
 	    //only one monitor group can be selected at one time 
 		$("input.tab").click(function(){
@@ -132,17 +156,6 @@
 			switch(current_monitor){
 			    case "general_info":
 			        $(".monitor_group").remove();
-			        var general_info_counters = "<div class='monitor_group'>" +
-			                                        "<ul>" +
-			                                            "<li class='counters_list_css' id='available'>Available?</li>" +
-			                                            "<li class='counters_list_css' id='version'>Version</li>" +
-			                                            "<li class='counters_list_css' id='running_for'>Running for</li>" +
-			                                            "<li class='counters_list_css' id='default_storage_engine'>Default storage engine</li>" +
-			                                            "<li class='counters_list_css' id='innodb_version'>InnoDB version</li>" +
-			                                            "<li class='counters_list_css' id='performance_schema'>Performance schema</li>" +
-			                                            "<li class='counters_list_css' id='uptime_since_flush_status'>Uptime since FLUSH STATUS</li>" +
-			                                        "</ul>" +
-			                                    "</div>";
 		            $("#server_details").prepend(general_info_counters);
 		            insert_data();
 		            break;
@@ -151,14 +164,14 @@
 		            $(".monitor_group").remove();
 		            var connection_history_counters = "<div class='monitor_group'>" +
 			                                              "<ul>" +
-			                                                  "<li class='counters_list_css' id='attempts'>Attempts</li>" +
-			                                                  "<li class='counters_list_css' id='successful'>Successful</li>" +
-			                                                  "<li class='counters_list_css' id='percentage_of_max_allowed_reached'>Percentage of max allowed reached</li>" +
-			                                                  "<li class='counters_list_css' id='refused'>Refused</li>" +
-			                                                  "<li class='counters_list_css' id='percentage_of_refused_connections'>Percentage of refused connections</li>" +
-			                                                  "<li class='counters_list_css' id='terminated_abruptly'>Terminated abruptly</li>" +
-			                                                  "<li class='counters_list_css' id='bytes_received'>Bytes received from all clients</li>" +
-			                                                  "<li class='counters_list_css' id='bytes_sent'>Bytes sent to all clients</li>" +
+			                                                  "<li class='monitor_group_css' id='attempts' formula='Connections'>Attempts</li>" +
+			                                                  "<li class='monitor_group_css' id='successful' formula='Connections - Aborted_connects'>Successful</li>" +
+			                                                  "<li class='monitor_group_css' id='percentage_of_max_allowed_reached' formula='Max_used_connections / max_connections'>Percentage of max allowed reached</li>" +
+			                                                  "<li class='monitor_group_css' id='refused' formula='Aborted_connects'>Refused</li>" +
+			                                                  "<li class='monitor_group_css' id='percentage_of_refused_connections' formula='Aborted_connects / Connections'>Percentage of refused connections</li>" +
+			                                                  "<li class='monitor_group_css' id='terminated_abruptly' formula='Aborted_clients'>Terminated abruptly</li>" +
+			                                                  "<li class='monitor_group_css' id='bytes_received' formula='Bytes_received'>Bytes received from all clients</li>" +
+			                                                  "<li class='monitor_group_css' id='bytes_sent' formula='Bytes_sent'>Bytes sent to all clients</li>" +
 			                                              "</ul>" +
 			                                          "</div>";
 			        $("#server_details").prepend(connection_history_counters);
@@ -169,15 +182,15 @@
 			        $(".monitor_group").remove();
 			        var current_conn_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li class='counters_list_css' id='max_allowed'>Max allowed</li>" +
-			                                            "<li class='counters_list_css' id='open_connections'>Open connections</li>" +
-			                                            "<li class='counters_list_css' id='connection_usage'>Connection usage</li>" +
-			                                            "<li class='counters_list_css' id='running_threads'>Currently running threads</li>" +
-			                                            "<li class='counters_list_css' id='concurrent_connections'>Highest no. of concurrent connections</li>" +
-			                                            "<li class='counters_list_css' id='idle_timeout'>Idle timeout after which a client is diconnected</li>" +
-			                                            "<li class='counters_list_css' id='max_interrupts'>Max number of interrupts before host is blocked</li>" +
-			                                            "<li class='counters_list_css' id='connect_timeout'>Connect timeout</li>" +
-			                                            "<li class='counters_list_css' id='back_log'>Back log</li>" +
+			                                            "<li class='monitor_group_css' id='max_allowed' formula='max_connections'>Max allowed</li>" +
+			                                            "<li class='monitor_group_css' id='open_connections' formula='Threads_connected'>Open connections</li>" +
+			                                            "<li class='monitor_group_css' id='connection_usage' formula='Threads_connected / max_connections'>Connection usage</li>" +
+			                                            "<li class='monitor_group_css' id='running_threads' formula='Threads_running'>Currently running threads</li>" +
+			                                            "<li class='monitor_group_css' id='concurrent_connections' formula='Max_used_connections'>Highest no. of concurrent connections</li>" +
+			                                            "<li class='monitor_group_css' id='idle_timeout' formula='wait_timeout'>Idle timeout after which a client is diconnected</li>" +
+			                                            "<li class='monitor_group_css' id='max_interrupts' formula='max_connect_errors'>Max number of interrupts before host is blocked</li>" +
+			                                            "<li class='monitor_group_css' id='connect_timeout' formula='connect_timeout'>Connect timeout</li>" +
+			                                            "<li class='monitor_group_css' id='back_log' formula='back_log'>Back log</li>" +
 			                                        "</ul>" +
 			                                    "</div>";
 		            $("#server_details").prepend(current_conn_counters);
@@ -188,16 +201,16 @@
 			        $(".monitor_group").remove();
 			        var innodb_cache_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li class='counters_list_css' id='innodb_buffer'>Allocated memory</li>" +
-			                                            "<li class='counters_list_css' id='innodb_instances'>Number of InnoDB buffer pool instances</li>" +
-			                                            "<li class='counters_list_css' id='free_memory'>Free Memory</li>" +
-			                                            "<li class='counters_list_css' id='cache_blocks'>Blocks requested from cache</li>" +
-			                                            "<li class='counters_list_css' id='cache_misses'>Cache misses</li>" +
-			                                            "<li class='counters_list_css' id='cache_hit_ratio'>Cache hit ratio</li>" +
-			                                            "<li class='counters_list_css' id='cache_write_wait'>Cache write wait required</li>" +
-			                                            "<li class='counters_list_css' id='adtl_pool_size'>Additional pool size</li>" +
-			                                            "<li class='counters_list_css' id='free_page_waits'>No. of waits for free pages</li>" +
-			                                            "<li class='counters_list_css' id='buffer_max_size'>Innodb change buffer max size</li>" +
+			                                            "<li class='monitor_group_css' id='innodb_buffer' formula='innodb_buffer_pool_size'>Allocated memory</li>" +
+			                                            "<li class='monitor_group_css' id='innodb_instances' formula='innodb_buffer_pool_instances'>Number of InnoDB buffer pool instances</li>" +
+			                                            "<li class='monitor_group_css' id='free_memory' formula='Innodb_buffer_pool_pages_free'>Free Memory</li>" +
+			                                            "<li class='monitor_group_css' id='cache_blocks' formula='Innodb_buffer_pool_read_requests'>Blocks requested from cache</li>" +
+			                                            "<li class='monitor_group_css' id='cache_misses' formula='Innodb_buffer_pool_reads'>Cache misses</li>" +
+			                                            "<li class='monitor_group_css' id='cache_hit_ratio' formula='1 - (Innodb_buffer_pool_reads / Innodb_buffer_pool_read_requests)'>Cache hit ratio</li>" +
+			                                            "<li class='monitor_group_css' id='cache_write_wait' formula='Innodb_buffer_pool_wait_free / Innodb_buffer_pool_write_requests'>Cache write wait required</li>" +
+			                                            "<li class='monitor_group_css' id='adtl_pool_size' formula='innodb_additional_mem_pool_size'>Additional pool size</li>" +
+			                                            "<li class='monitor_group_css' id='free_page_waits' formula='Innodb_buffer_pool_wait_free'>No. of waits for free pages</li>" +
+			                                            "<li class='monitor_group_css' id='buffer_max_size' formula='innodb_change_buffer_max_size'>Innodb change buffer max size</li>" +
 			                                        "</ul>" +
 			                                     "</div>";
 		            $("#server_details").prepend(innodb_cache_counters);
@@ -208,12 +221,12 @@
 			        $(".monitor_group").remove();
 			        var threads_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li class='counters_list_css' id='thread_cache_size'>Number of threads that can be cached</li>" +
-			                                            "<li class='counters_list_css' id='threads_cached'>Number of threads in cache</li>" +
-			                                            "<li class='counters_list_css' id='threads_created'>Threads created to handle connections</li>" +
-			                                            "<li class='counters_list_css' id='cache_hit_rate'>Thread cache hit rate</li>" +
-			                                            "<li class='counters_list_css' id='slow_launch_time'>Min. launch time for a thread to be considered slow</li>" +
-			                                            "<li class='counters_list_css' id='slow_launch_threads'>No. of slow launch threads</li>" +
+			                                            "<li class='monitor_group_css' id='thread_cache_size' formula='thread_cache_size'>Number of threads that can be cached</li>" +
+			                                            "<li class='monitor_group_css' id='threads_cached' formula='Threads_cached'>Number of threads in cache</li>" +
+			                                            "<li class='monitor_group_css' id='threads_created' formula='Threads_created'>Threads created to handle connections</li>" +
+			                                            "<li class='monitor_group_css' id='cache_hit_rate' formula='1-Threads_created/Connections'>Thread cache hit rate</li>" +
+			                                            "<li class='monitor_group_css' id='slow_launch_time' formula='slow_launch_time'>Min. launch time for a thread to be considered slow</li>" +
+			                                            "<li class='monitor_group_css' id='slow_launch_threads' formula='Slow_launch_threads'>No. of slow launch threads</li>" +
 			                                        "</ul>" +
 			                                     "</div>";
 		            $("#server_details").prepend(threads_counters);
@@ -224,23 +237,23 @@
 			        $(".monitor_group").remove();
 			        var query_cache_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li class='counters_list_css' id='enabled'>Enabled?</li>" +
-			                                            "<li class='counters_list_css' id='type'>Type</li>" +
-			                                            "<li class='counters_list_css' id='cache_size'>Cache size</li>" +
-			                                            "<li class='counters_list_css' id='max_size'>Max size of result set that can be cached</li>" +
-			                                            "<li class='counters_list_css' id='free_memory'>Free memory</li>" +
-			                                            "<li class='counters_list_css' id='query_buffer'>Query parsing and execution buffer</li>" +
-			                                            "<li class='counters_list_css' id='block_size'>Block size</li>" +
-			                                            "<li class='counters_list_css' id='total_blocks'>Total blocks</li>" +
-			                                            "<li class='counters_list_css' id='free_blocks'>Free blocks</li>" +
-			                                            "<li class='counters_list_css' id='fragmentation'>Fragmentation</li>" +
-			                                            "<li class='counters_list_css' id='query_cache'>Queries in cache</li>" +
-			                                            "<li class='counters_list_css' id='query_not_cached'>Queries not cached</li>" +
-			                                            "<li class='counters_list_css' id='cache_misses'>Cache misses</li>" +
-			                                            "<li class='counters_list_css' id='cache_hits'>Cache hits</li>" +
-			                                            "<li class='counters_list_css' id='cache_hit_ratio'>Cache hit ratio</li>" +
-			                                            "<li class='counters_list_css' id='queries_pruned'>Queries pruned from cache</li>" +
-			                                            "<li class='counters_list_css' id='pruned_percentage'>Pruned as percentage of inserts</li>" +
+			                                            "<li class='monitor_group_css' id='enabled' formula='have_query_cache'>Enabled?</li>" +
+			                                            "<li class='monitor_group_css' id='type' formula='query_cache_type'>Type</li>" +
+			                                            "<li class='monitor_group_css' id='cache_size' formula='query_cache_size'>Cache size</li>" +
+			                                            "<li class='monitor_group_css' id='max_size' formula='query_cache_limit'>Max size of result set that can be cached</li>" +
+			                                            "<li class='monitor_group_css' id='free_memory' formula='Qcache_free_memory'>Free memory</li>" +
+			                                            "<li class='monitor_group_css' id='query_buffer' formula='query_prealloc_size'>Query parsing and execution buffer</li>" +
+			                                            "<li class='monitor_group_css' id='block_size' formula='query_cache_min_res_unit'>Block size</li>" +
+			                                            "<li class='monitor_group_css' id='total_blocks' formula='Qcache_total_blocks'>Total blocks</li>" +
+			                                            "<li class='monitor_group_css' id='free_blocks' formula='Qcache_free_blocks'>Free blocks</li>" +
+			                                            "<li class='monitor_group_css' id='fragmentation' formula='Qcache_free_blocks / ceil(Qcache_total_blocks / 2)'>Fragmentation</li>" +
+			                                            "<li class='monitor_group_css' id='query_cache' formula='Qcache_queries_in_cache'>Queries in cache</li>" +
+			                                            "<li class='monitor_group_css' id='query_not_cached' formula='Qcache_not_cached'>Queries not cached</li>" +
+			                                            "<li class='monitor_group_css' id='cache_misses' formula='Qcache_inserts'>Cache misses</li>" +
+			                                            "<li class='monitor_group_css' id='cache_hits' formula='Qcache_hits'>Cache hits</li>" +
+			                                            "<li class='monitor_group_css' id='cache_hit_ratio' formula='Qcache_hits / (Qcache_inserts + Qcache_hits)'>Cache hit ratio</li>" +
+			                                            "<li class='monitor_group_css' id='queries_pruned' formula='Qcache_lowmem_prunes'>Queries pruned from cache</li>" +
+			                                            "<li class='monitor_group_css' id='pruned_percentage' formula='Qcache_lowmem_prunes / Qcache_inserts'>Pruned as percentage of inserts</li>" +
 			                                        "</ul>" +
 			                                     "</div>";
 		            $("#server_details").prepend(query_cache_counters);
@@ -251,12 +264,12 @@
 			        $(".monitor_group").remove();
 			        var index_usage_counters = "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li class='counters_list_css' id='full_table_scans'>Percentage of full table scans</li>" +
-			                                            "<li class='counters_list_css' id='buffer'>Buffer for full table scans (per client)</li>" +
-			                                            "<li class='counters_list_css' id='select_scans'>SELECTs requiring full table scan</li>" +
-			                                            "<li class='counters_list_css' id='buffer_joins'>Buffer for joins requiring full table scan (per client)</li>" +
-			                                            "<li class='counters_list_css' id='joins_required'>Joins requiring full scan of second and subsequent tables</li>" +
-			                                            "<li class='counters_list_css' id='joins_revaluate'>Joins that reevaluate index selection for each row in a join</li>" +
+			                                            "<li class='monitor_group_css' id='full_table_scans' formula='(Handler_read_rnd_next + Handler_read_rnd) / (Handler_read_rnd_next + Handler_read_rnd + Handler_read_first + Handler_read_next + Handler_read_key + Handler_read_prev)'>Percentage of full table scans</li>" +
+			                                            "<li class='monitor_group_css' id='buffer' formula='read_buffer_size'>Buffer for full table scans (per client)</li>" +
+			                                            "<li class='monitor_group_css' id='select_scans' formula='Select_scan'>SELECTs requiring full table scan</li>" +
+			                                            "<li class='monitor_group_css' id='buffer_joins' formula='join_buffer_size'>Buffer for joins requiring full table scan (per client)</li>" +
+			                                            "<li class='monitor_group_css' id='joins_required' formula='Select_full_join'>Joins requiring full scan of second and subsequent tables</li>" +
+			                                            "<li class='monitor_group_css' id='joins_revaluate' formula='Select_range_check'>Joins that reevaluate index selection for each row in a join</li>" +
 			                                            "</ul>" +
 			                                     "</div>";
 		            $("#server_details").prepend(index_usage_counters);
@@ -267,17 +280,17 @@
 			        $(".monitor_group").remove();
 			        var statements_counters =   "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li class='counters_list_css' id='all'>All statements</li>" +
-			                                            "<li class='counters_list_css' id='selects'>SELECTs</li>" +
-			                                            "<li class='counters_list_css' id='inserts'>INSERTs</li>" +
-			                                            "<li class='counters_list_css' id='updates'>UPDATEs</li>" +
-			                                            "<li class='counters_list_css' id='deletes'>DELETEs</li>" +
-			                                            "<li class='counters_list_css' id='dms'>Total Data Manipulation Statements (DMS)</li>" +
-			                                            "<li class='counters_list_css' id='rows'>Total rows returned</li>" +
-			                                            "<li class='counters_list_css' id='rows_index'>Total rows returned via indexes</li>" +
-			                                            "<li class='counters_list_css' id='avg_rows'>Avg rows per query</li>" +
-			                                            "<li class='counters_list_css' id='rows_percentage'>Percentage of rows returned using indexes</li>" +
-			                                            "<li class='counters_list_css' id='max_prepared'>Max Prepared statements configuration</li>" +
+			                                            "<li class='monitor_group_css' id='all' formula='Questions'>All statements</li>" +
+			                                            "<li class='monitor_group_css' id='selects' formula='Com_select + Qcache_hits'>SELECTs</li>" +
+			                                            "<li class='monitor_group_css' id='inserts' formula='(Com_insert + Com_replace) / Questions'>INSERTs</li>" +
+			                                            "<li class='monitor_group_css' id='updates' formula='Com_update / Questions'>UPDATEs</li>" +
+			                                            "<li class='monitor_group_css' id='deletes' formula='Com_delete / Questions'>DELETEs</li>" +
+			                                            "<li class='monitor_group_css' id='dms' formula='Com_select + Com_insert + Com_update + Com_delete'>Total Data Manipulation Statements (DMS)</li>" +
+			                                            "<li class='monitor_group_css' id='rows' formula='Handler_read_first + Handler_read_key + Handler_read_next + Handler_read_prev + Handler_read_rnd + Handler_read_rnd_next + Sort_rows'>Total rows returned</li>" +
+			                                            "<li class='monitor_group_css' id='rows_index' formula='Handler_read_first + Handler_read_key + Handler_read_next + Handler_read_prev'>Total rows returned via indexes</li>" +
+			                                            "<li class='monitor_group_css' id='avg_rows' formula='(Handler_read_first + Handler_read_key + Handler_read_next + Handler_read_prev + Handler_read_rnd + Handler_read_rnd_next + Sort_rows)/Questions'>Avg rows per query</li>" +
+			                                            "<li class='monitor_group_css' id='rows_percentage' formula='(Handler_read_first + Handler_read_key + Handler_read_next + Handler_read_prev'>Percentage of rows returned using indexes</li>" +
+			                                            "<li class='monitor_group_css' id='max_prepared' formula='max_prepared_stmt_count'>Max Prepared statements configuration</li>" +
 			                                        "</ul>" +
 			                                     "</div>";
 		            $("#server_details").prepend(statements_counters);
@@ -288,27 +301,27 @@
 			        $(".monitor_group").remove();
 			        var replication_counters =   "<div class='monitor_group'>" +
 			                                        "<ul>" +
-			                                            "<li class='counters_list_css' id='running'>Slave running?</li>" +
-			                                            "<li class='counters_list_css' id='read_only'>Slave read only?</li>" +
-			                                            "<li class='counters_list_css' id='io_running'>Slave I/O running?</li>" +
-			                                            "<li class='counters_list_css' id='io_state'>Slave I/O state</li>" +
-			                                            "<li class='counters_list_css' id='slave_sql'>Slave SQL running</li>" +
-			                                            "<li class='counters_list_css' id='sbm'>Seconds behind master</li>" +
-			                                            "<li class='counters_list_css' id='skip'>Skip Errors in Slave?</li>" +
-			                                            "<li class='counters_list_css' id='err_no'>Last error number</li>" +
-			                                            "<li class='counters_list_css' id='err_msg'>Last error message</li>" +
-			                                            "<li class='counters_list_css' id='io_err'>Last I/O error</li>" +
-			                                            "<li class='counters_list_css' id='ntw_timeout'>Slave network timeout</li>" +
-			                                            "<li class='counters_list_css' id='trsc_count'>Slave retried transaction count</li>" +
-			                                            "<li class='counters_list_css' id='m_host'>Master host</li>" +
-			                                            "<li class='counters_list_css' id='m_port'>Master port</li>" +
-			                                            "<li class='counters_list_css' id='m_user'>Master user</li>" +
-			                                            "<li class='counters_list_css' id='mlog_file'>Master log file</li>" +
-			                                            "<li class='counters_list_css' id='mlog_read_pos'>Master log read position</li>" +
-			                                            "<li class='counters_list_css' id='rm_log'>Relay master log file</li>" +
-			                                            "<li class='counters_list_css' id='rm_log_pos'>Relay master log file position</li>" +
-			                                            "<li class='counters_list_css' id='rlog'>Relay log file</li>" +
-			                                            "<li class='counters_list_css' id='rlog_pos'>Relay log position</li>" +
+			                                            "<li class='monitor_group_css' id='running' formula='Slave_running'>Slave running?</li>" +
+			                                            "<li class='monitor_group_css' id='read_only' formula='read_only'>Slave read only?</li>" +
+			                                            "<li class='monitor_group_css' id='io_running' formula='Slave_IO_Running'>Slave I/O running?</li>" +
+			                                            "<li class='monitor_group_css' id='io_state' formula='Slave_IO_State'>Slave I/O state</li>" +
+			                                            "<li class='monitor_group_css' id='slave_sql' formula='Slave_SQL_Running'>Slave SQL running</li>" +
+			                                            "<li class='monitor_group_css' id='sbm' formula='Seconds_Behind_Master'>Seconds behind master</li>" +
+			                                            "<li class='monitor_group_css' id='skip' formula='slave_skip_errors'>Skip Errors in Slave?</li>" +
+			                                            "<li class='monitor_group_css' id='err_no' formula='Last_Errno'>Last error number</li>" +
+			                                            "<li class='monitor_group_css' id='err_msg' formula='Last_Error'>Last error message</li>" +
+			                                            "<li class='monitor_group_css' id='io_err' formula='Last_IO_Error'>Last I/O error</li>" +
+			                                            "<li class='monitor_group_css' id='ntw_timeout' formula='slave_net_timeout'>Slave network timeout</li>" +
+			                                            "<li class='monitor_group_css' id='trsc_count' formula='Slave_retried_transactions'>Slave retried transaction count</li>" +
+			                                            "<li class='monitor_group_css' id='m_host' formula='Master_Host'>Master host</li>" +
+			                                            "<li class='monitor_group_css' id='m_port' formula='Master_Port'>Master port</li>" +
+			                                            "<li class='monitor_group_css' id='m_user' formula='Master_User'>Master user</li>" +
+			                                            "<li class='monitor_group_css' id='mlog_file' formula='Master_Log_File'>Master log file</li>" +
+			                                            "<li class='monitor_group_css' id='mlog_read_pos' formula='Read_Master_Log_Pos'>Master log read position</li>" +
+			                                            "<li class='monitor_group_css' id='rm_log' formula='Relay_Master_Log_File'>Relay master log file</li>" +
+			                                            "<li class='monitor_group_css' id='rm_log_pos' formula='Exec_Master_Log_Pos'>Relay master log file position</li>" +
+			                                            "<li class='monitor_group_css' id='rlog' formula='Relay_Log_File'>Relay log file</li>" +
+			                                            "<li class='monitor_group_css' id='rlog_pos' formula='Relay_Log_Pos'>Relay log position</li>" +
 			                                        "</ul>" +
 			                                     "</div>";
 		            $("#server_details").prepend(replication_counters);
@@ -317,23 +330,21 @@
          }
 		});
         
-        formula_dict = {
-			             'available' : 'MySQL server running or not',
-			             'version' : 'version',
-			           }
+        
         //event to display the formula of a counter when mouse is hovered over it 
-        $(document).on('mouseover', '.counters_list_css', function() {
+        $(document).on('mouseover', '.monitor_group_css', function(event) {
 				//alert($(this).attr('id'));
-				var p = $(this).position();
+				//var p = $(this).position();
 			    
-			    $("#formula").html(formula_dict[$(this).attr('id')]).dialog({
+			    $("#formula").html($(this).attr('formula')).dialog({
 					minHeight: 'auto',
-					//minWidth: 'auto',
-					modal: true,
+					width: 200,
+					modal: false,
 					resizable: false,
 					autoOpen: false,
 					show: "blind",
                     hide: "explode",
+                    position: {my: 'left+1 bottom-1', of: event},
 				});
 				
 				$(".ui-dialog-titlebar").hide();
@@ -341,7 +352,7 @@
 				$("#formula").dialog("open");
 				
 				$(".monitor_group").mousemove(function(e) {
-					$("#formula").dialog('widget').position({ my: 'left+3 bottom-3', of: e });
+					$("#formula").dialog('widget').position({ my: 'left+4 bottom-4', of: e });
 				 });
 				 
 				 /*$('.monitor_group').mousemove(function (e) {
@@ -355,9 +366,9 @@
 					//alert(e.pageX);
 				});*/
 				
-				/*$("#" + $(this).attr('id')).bind('mouseleave', function() {
+				$(".monitor_group").mouseleave(function() {
 					$("#formula").dialog("close");
-				});*/
+				});
 				
         
 	    });
@@ -381,7 +392,7 @@
 		} 
         
         
-        
+        //insert the data into it's proper place in the server list
         function insert_data() {
 			//var s1 = JSON.parse(selected_servers_object);
 			//alert(selected_servers_object.ger_server.general_info['version']);
@@ -431,11 +442,10 @@
 			}
 		}
 		
-		
-		//this selector describes which servers are being currently selected
-		//more than one server can be selected at a time
-		//it sends a ajax post request to the index view and returns the json data
-		$("#server_list_form :checkbox").change(function(){
+		//this will be called each time the server checkbox's state changes
+		//also it will be called at the starting of each page reload
+		function add_server(){
+			//alert($(this).val());
 			var $this = $(this);
 			//alert("inside checkbox");
 			//checking is the server checkbox is checked and appending the serever details
@@ -485,7 +495,16 @@
 				$("#" + escaped_server_name).remove();
 				//alert(selected_servers_name_list);
 			}
-		});
+		}
+		
+		//get all the checkbox values and pass it to the add server function
+		//the add server function checks if the checkbox is checked or unchecked
+		//if checked it appends the server data else removes it
+		$("input[type=checkbox]").each(add_server);
+		
+		//append server details when a new checkbox is clicked
+		//also when a server checkbox is changed it removes the server details(when unchecked)
+		$("#server_list_form :checkbox").change(add_server);
 			
 	});
 	
@@ -502,9 +521,10 @@
 
 <body>
     {% block body_tag %}
-        <div id="formula"></div>
+        <div id="formula" style="background: linear-gradient(#B6C6D2, #EAECEE);
+        font-size: 1vw; text-align: center;"></div>
         <input type="button" value="Set Data Collection" id="data_collection" style='left: 2.4vw; width: 12vw; 
-               display: inline-block;position: fixed; top: 16vh; background: linear-gradient(#49708f, #293f50);
+               display: inline-block;position: fixed; top: 18vh; background: linear-gradient(#49708f, #293f50);
 	           font: 1.4vh/1.4vw "Helvetica Neue", Helvetica, Arial, sans-serif; border: 0; line-height: 1vh; color: #fff;
 	           cursor: pointer; height: 3.5vh; padding: 0.5vw 1vh;'/>
     
@@ -542,12 +562,12 @@
 	                    </li>
 	                {% endfor %}
 	            </ul>
-	     {% endif %}
+	    {% endif %}
 	            <!--Delete server will call the index view with the checkbox values as the POST request-->
 	            <br>
 	            <span>
 	                <input type="submit" value="Delete" class="btn" name="delete_server" 
-	                style="width: 5.5vw; left: 10.7vw;" id="delete_server">
+	                style="width: 5.5vw; left: 10.7vw;" id="delete_server" onclick="return confirm('Are you sure you want to delete the server(s)?');">
 	                
 	        </form>
 	        <!--Add server will call the adding_server view-->
