@@ -450,8 +450,15 @@
 			//alert("inside checkbox");
 			//checking is the server checkbox is checked and appending the serever details
 			if($this.is(':checked')){
-				var server_selection = $this.val();
+				var server_selection = escape_server_name($this.val())
 				
+				var server_html = "<div class='server_class' id='" + server_selection + "'>" +
+						                        "<div class='server_heading'>" + server_selection + "</div>" + 
+						                            "<ul class='server_counters_list' id='list_" + server_selection + "'>" +
+						                                "<img src=\"{% static 'img/wait.gif' %}\" id='img_" + server_selection + "' />" +
+						                            "</ul>" +
+						        "</div>";    
+				$(".monitor_group").after(server_html);
 				//alert(selected_servers_name_list);		
 				$.post('/mypy/', { //this data is passed to the views in django
 					               single_selected_server: $this.val(), 
@@ -477,13 +484,16 @@
 						
 						/*building the html_response to be appeneded*/
 						//alert($this.val());						
-					    var html_response = "<div class='server_class' id='" + $this.val() + "'>" +
+					    /*var html_response = "<div class='server_class' id='" + $this.val() + "'>" +
 						                        "<div class='server_heading'>" + server_selection + "</div>" + 
-						                            "<ul class='server_counters_list'>" +
+						                            "<ul class='server_counters_list' id='list_" + server_selection + "'>" +
 						                                counters_list +
 						                            "</ul>" +
-						                     "</div>";    
-						$(".monitor_group").after(html_response);
+						                     "</div>";*/
+						//$("#" + server_selection).remove();
+						$("#img_" + server_selection).remove();    
+						$("#list_" + server_selection).html(counters_list);
+						//$(".monitor_group").after(html_response);
 						//alert(JSON.stringify(selected_servers_object));
 						});
 			}
