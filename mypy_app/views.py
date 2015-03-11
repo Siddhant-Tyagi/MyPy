@@ -159,9 +159,12 @@ def edit_server(request):
 
 
 def index(request):
+    #initializing the server's object dictionary
+    #this will be passed as the JSON response to the AJAX data collection request
     servers_object = {}
-    t1 = 0.00
+
     context = RequestContext(request)
+    
     #check if request method is POST
     if request.method == 'POST':
         #check if request is ajax and return json response
@@ -197,6 +200,7 @@ def index(request):
                                             current_server_data[current_server_data.keys()[0]]['slave_status_dict']
                                         )
                 
+                #mapping server in the server object dict with its counter's dict 
                 servers_object[current_server_data.keys()[0]] = server_dict
                 return HttpResponse(json.dumps(servers_object))
             
@@ -233,90 +237,6 @@ def index(request):
                 #print t1
                 return HttpResponse(json.dumps(servers_object))
 
-            """#get the selected checkbox values from jquery
-            s1 = request.POST.get("server_list_from_jquery")
-            #print type(s1)
-            selected_servers_list = json.loads(s1)
-            print selected_servers_list
-            for e in range(0, len(selected_servers_list)):
-                selected_servers_list[e] = str(selected_servers_list[e])
-            print selected_servers_list
-            #print selected_servers_list
-            #check if there are servers in servers_object and selected_servers_list
-            global servers_object
-            print str(type(servers_object))
-            if servers_object != {} and selected_servers_list != []:
-                #if its not empty then delete the key value pair from the python's servers
-                #object which are not in the present list of selected servers
-                servers_to_be_deleted = []
-                for server in servers_object:
-                    if server not in selected_servers_list:
-                        servers_to_be_deleted.append(server)
-                for server in servers_to_be_deleted:
-                    del servers_object[server]
-
-            #checking if the currently selected server's list is not empty
-            if selected_servers_list != []:
-                #global servers_object
-                #if not then updating the servers object with the relevant data
-                for server in selected_servers_list:
-                    #print server + "  " + servers_object[server]['general_info']['running_for']
-                    if server not in servers_object:
-                        print "inside if"
-                        #calling the external function and updating the servers_object
-                        #this condition is executed when new server checkbox is clicked
-                        current_server_obj = add_server.objects.filter(mysql_server_name=server)[0]
-                        #print "current_server_obj " + str(current_server_obj)
-                        global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
-                        #empty dictioanry returned means unable to connect to mysql server
-                        #returning n/a for all counters
-                        if global_var_dict == {} and global_status_dict == {}:
-                            #print "global var dict is empty"
-                            server_dict = build_server_details_dict(global_var_dict, global_status_dict)
-                            #print server_dict
-                            servers_object[istr(server)] = server_dict
-                            return HttpResponse(json.dumps(servers_object))
-                        #print global_status_dict
-                        server_dict = build_server_details_dict(global_var_dict, global_status_dict)
-                        servers_object[str(server)] = server_dict
-                        #print server + "  " + servers_object[server]['general_info']['running_for']
-                        return HttpResponse(json.dumps(servers_object)) 
-
-                    else:
-                        #global servers_object
-                        print "inside else"
-                        #this is executed when the servers checked list is same
-                        #and updating the servers_object data after a given data collection interval
-                        current_server_obj = add_server.objects.filter(mysql_server_name=server)[0]
-                        #print current_server_obj
-                        global_var_dict, global_status_dict = get_mysql_data(current_server_obj)
-                        if global_var_dict == {} and global_status_dict == {}:
-                            #print "global var dict is empty"
-                            server_dict = build_server_details_dict(global_var_dict, global_status_dict)
-                            #print server_dici
-                            #global servers_object
-                            servers_object[str(server)] = server_dict
-                            return HttpResponse(json.dumps(servers_object))
- 
-                        server_dict = build_server_details_dict(global_var_dict, global_status_dict)
-                        #global servers_object
-                        #del servers_object[server]
-                        #servers_object[str(server)] = server_dict
-                        print servers_object
-
-                        #print "else  " + server + "  " + servers_object[server]['general_info']['running_for']
-                        #print "inside loop " + str(hex(id(servers_object)))
-                    #servers_object[server] = server_dict
-                    #print "for loop:  " + server + "  " + servers_object[server]['general_info']['running_for']
-                    #print servers_object
-                    if server == selected_servers_list[-1]:
-                        return HttpResponse(json.dumps(servers_object)) 
-                
-                #print servers_object['production_server']['general_info']['running_for']
-                #print servers_object['Metabox MySQL server']['general_info']['running_for']
-                #print "outside loop  " + str(hex(id(servers_object)))"""
-                #return HttpResponse(json.dumps(servers_object)) 
-
         
         if request.POST['delete_server'] == 'Delete':
             print "inside delete"
@@ -343,24 +263,13 @@ def index(request):
     return render_to_response('mypy_app/index.html', context_dict, context)
 
 
-def monitors(request):
-    context = RequestContext(request)
-    context_dict = {"test_var": "monitors page",}
-    return render_to_response('mypy_app/monitors.html', context_dict, context)
-
-
-def realtime(request):
-    context = RequestContext(request)
-    context_dict = {"test_var": "realtime page",}
-    return render_to_response('mypy_app/realtime.html', context_dict, context)
-
 def build_server_details_dict(global_var_dict, global_status_dict, slave_status_dict):
-    #global t1
-    #start_time = time.time()
-    #print "inside func"
-    #print "inside build server details"
+    #initializing counters dictionary from the groups class constructor
     counter_object = groups()
     counters_dict = counter_object.counters_dict
+    
+    #if the get_mysql_data method returns an empty dictionary
+    #it means that connection to the MySQL server was unsuccessful 
     if global_var_dict == {}:
         return counters_dict
     

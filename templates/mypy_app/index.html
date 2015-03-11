@@ -378,7 +378,7 @@
         
         //function for escaping server_name of white spaces, to be used as id
         function escape_server_name(server_name) {
-			var escaped_server_name = "";
+			var escaped_server_name = '';
 			for(index=0; index<server_name.length; index++) {
 				if(server_name[index] == ' ') {
 					escaped_server_name += '\\ ';
@@ -450,12 +450,12 @@
 			//alert("inside checkbox");
 			//checking is the server checkbox is checked and appending the serever details
 			if($this.is(':checked')){
-				var server_selection = escape_server_name($this.val())
-				
-				var server_html = "<div class='server_class' id='" + server_selection + "'>" +
-						                        "<div class='server_heading'>" + server_selection + "</div>" + 
-						                            "<ul class='server_counters_list' id='list_" + server_selection + "'>" +
-						                                "<img src=\"{% static 'img/wait.gif' %}\" id='img_" + server_selection + "' />" +
+				//var server_selection = escape_server_name($this.val())
+				//alert(server_selection);
+				var server_html = "<div class='server_class' id='" + $this.val() + "'>" +
+						                        "<div class='server_heading'>" + $this.val() + "</div>" + 
+						                            "<ul class='server_counters_list' id='list_" + $this.val() + "'>" +
+						                                "<img src=\"{% static 'img/wait.gif' %}\" id='img_" + $this.val() + "' />" +
 						                            "</ul>" +
 						        "</div>";    
 				$(".monitor_group").after(server_html);
@@ -467,7 +467,7 @@
 					function(json_response){
 						//alert(JSON.stringify(get_server_checklist()));
 					    var counters_dict = JSON.parse(json_response);
-					    var response_dict = counters_dict[server_selection];
+					    var response_dict = counters_dict[$this.val()];
 					    //alert(response_dict[server_selection]);
 					    //updating js object of all the current checked server with its respective counter
 					    selected_servers_object[$this.val()] = response_dict;
@@ -491,8 +491,9 @@
 						                            "</ul>" +
 						                     "</div>";*/
 						//$("#" + server_selection).remove();
-						$("#img_" + server_selection).remove();    
-						$("#list_" + server_selection).html(counters_list);
+						//alert("[id='img_" + $this.val() + "']");
+						$("[id='img_" + $this.val() + "']").remove();    
+						$("[id='list_" + $this.val() + "']").html(counters_list);
 						//$(".monitor_group").after(html_response);
 						//alert(JSON.stringify(selected_servers_object));
 						});
